@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.x.myunn.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_navigation_home_to_nav_profile"
+            app:destination="@id/nav_profile" />
+        <action
+            android:id="@+id/action_navigation_home_to_showUsersFragment"
+            app:destination="@id/showUsersFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="com.x.myunn.ui.dashboard.DashboardFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.x.myunn.ui.notifications.NotificationsFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_notifications">
+        <action
+            android:id="@+id/action_navigation_notifications_to_postDetail"
+            app:destination="@id/postDetail" />
+        <action
+            android:id="@+id/action_navigation_notifications_to_nav_profile"
+            app:destination="@id/nav_profile" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_upload"
+        android:name="com.x.unncrimewatch_k.ui.uploadFeed.UploadFragment"
+        android:label="@string/upload"
+        tools:layout="@layout/fragment_upload">
+        <action
+            android:id="@+id/action_uploadFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.x.myunn.ui.profile.ProfileFragment"
+        android:label="@string/menu_profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_nav_profile_to_showUsersFragment"
+            app:destination="@id/showUsersFragment" />
+        <action
+            android:id="@+id/action_nav_profile_to_profileSettingFragment"
+            app:destination="@id/profileSettingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="com.x.myunn.ui.search.SearchFragment"
+        android:label="search"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/showUsersFragment"
+        android:name="com.x.myunn.ui.showUsers.ShowUsersFragment"
+        android:label="ShowUsers"
+        tools:layout="@layout/fragment_show_users">
+        <action
+            android:id="@+id/action_showUsersFragment_to_nav_profile"
+            app:destination="@id/nav_profile" />
+    </fragment>
+    <activity
+        android:id="@+id/postDetail"
+        android:name="com.x.myunn.activities.PostDetailActivty"
+        android:label="activity_post_detail"
+        tools:layout="@layout/activity_post_detail" />
+
+    <fragment
+        android:id="@+id/profileSettingFragment"
+        android:name="com.x.myunn.ui.profileSetting.ProfileSettingFragment"
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_profile_setting">
+        <action
+            android:id="@+id/action_profileSettingFragment_to_nav_profile"
+            app:destination="@id/nav_profile" />
+    </fragment>
+</navigation>

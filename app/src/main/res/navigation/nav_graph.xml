@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/SignInFrag">
+
+    <fragment
+        android:id="@+id/SignInFrag"
+        android:name="com.x.myunn.ui.login.SignInFragment"
+        android:label="@string/sign_in"
+        tools:layout="@layout/sign_in_fragment">
+        <action
+            android:id="@+id/action_SignInFrag_to_SignUpFrag"
+            app:destination="@id/SignUpFrag" />
+    </fragment>
+    <fragment
+        android:id="@+id/SignUpFrag"
+        android:name="com.x.myunn.ui.login.SignUpFragment"
+        android:label="@string/new_sign_up"
+        tools:layout="@layout/sign_up_fragment">
+        <action
+            android:id="@+id/action_SignUpFrag_to_SignInFrag"
+            app:destination="@id/SignInFrag" />
+    </fragment>
+</navigation>
