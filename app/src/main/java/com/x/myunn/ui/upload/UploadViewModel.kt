@@ -1,7 +1,6 @@
-package com.x.unncrimewatch_k.ui.uploadFeed
+package com.x.myunn.ui.upload
 
 
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.x.myunn.firebase.FirebaseRepo
@@ -25,9 +24,9 @@ class UploadViewModel : ViewModel() {
         _navigateBackHome.value = null
     }
 
-    fun uploadPost(v: View, postDescription: String) {
+    fun uploadPost(postDescription: String) {
 
-        firebaseRepo.uploadPost(v, postDescription)
+        firebaseRepo.uploadPost(postDescription)
     }
 
     override fun onCleared() {

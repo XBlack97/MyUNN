@@ -1,4 +1,4 @@
-package com.x.unncrimewatch_k.ui.uploadFeed
+package com.x.myunn.ui.upload
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

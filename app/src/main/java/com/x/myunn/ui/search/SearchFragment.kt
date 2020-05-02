@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.x.myunn.R
@@ -41,9 +41,6 @@ class SearchFragment : Fragment() {
 
         recyclerView?.adapter = userAdapter
 
-
-
-
         return view
     }
 
@@ -51,24 +48,21 @@ class SearchFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
 
         requireView().search_text_search_frag.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(p0: Editable?) {}
 
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (view!!.search_text_search_frag.text.toString() == "") {
+                    recyclerView?.visibility = View.GONE
                 } else {
                     recyclerView?.visibility = View.VISIBLE
 
                     viewModel.retrieveUsers(view!!.search_text_search_frag, mUser, userAdapter)
-                    viewModel.searchUser(s.toString().toLowerCase(), mUser, userAdapter)
+                    viewModel.searchUser(s.toString(), mUser, userAdapter)
                 }
             }
         })

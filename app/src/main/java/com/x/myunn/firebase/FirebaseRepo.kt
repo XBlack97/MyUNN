@@ -4,14 +4,11 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,14 +17,11 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.x.myunn.R
 import com.x.myunn.activities.MainActivity
-import com.x.myunn.adapter.CommentsAdapter
 import com.x.myunn.adapter.UserAdapter
 import com.x.myunn.model.Comment
 import com.x.myunn.model.Notification
 import com.x.myunn.model.Post
 import com.x.myunn.model.User
-import com.x.unncrimewatch_k.firebase.FirebaseHandler
-import com.x.unncrimewatch_k.ui.uploadFeed.UploadFragment
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,6 +31,10 @@ class FirebaseRepo {
 
     val mAuth = FirebaseAuth.getInstance()
     val ref = FirebaseDatabase.getInstance().reference
+
+    val userRef = ref.child("Users")
+    val postsRef = ref.child("Posts")
+
     val storageProfilePicRef = FirebaseStorage.getInstance().reference
         .child("Profile Pictures")
 
@@ -44,10 +42,11 @@ class FirebaseRepo {
         FirebaseHandler()
     }
 
+    val main = MainActivity.newInstance()
+
 
     fun CreateAccount(
-        fullname: String, username: String, email: String,
-        password: String, c: Context
+        fullname: String, username: String, email: String, password: String, c: Context
     ) {
 
         val pd = ProgressDialog(c)
@@ -76,12 +75,9 @@ class FirebaseRepo {
         pd: ProgressDialog, c: Context
     ) {
 
-        val currentUserID = mAuth.currentUser!!.uid
-        val userRef = ref.child("Users")
-
         val userMap = HashMap<String, Any>()
 
-        userMap["uid"] = currentUserID
+        userMap["uid"] = mAuth.currentUser!!.uid
         userMap["fullname"] = fullname
         userMap["username"] = username
         userMap["email"] = email
@@ -89,7 +85,7 @@ class FirebaseRepo {
         userMap["image"] = "https://firebasestorage.googleapis.com/v0/b/myunn-74e19.appspot." +
                 "com/o/Default%20image%2Fprofile.png?alt=media&token=2c79543b-6a94-46df-bdc4-4b22c47a6079"
 
-        userRef.child(currentUserID).setValue(userMap)
+        userRef.child(mAuth.currentUser!!.uid).setValue(userMap)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     pd.dismiss()
@@ -149,10 +145,9 @@ class FirebaseRepo {
         c: Context?
     ) {
 
-        val userRef =
-            ref.child("Users").child(profileId!!)
+        val _userRef = userRef.child(profileId!!)
 
-        userRef.addValueEventListener(object : ValueEventListener {
+        _userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(ds: DataSnapshot) {
 
                 if (ds.exists()) {
@@ -160,14 +155,8 @@ class FirebaseRepo {
                     val user = ds.getValue(User::class.java)!!
 
                     if (c != null) {
-                        Glide.with(c)
-                            .load(user.image)
-                            .apply(
-                                RequestOptions()
-                                    .placeholder(R.drawable.loading_animation)
-                                    .error(R.drawable.ic_broken_image)
-                            )
-                            .into(img!!)
+
+                        main.glideLoad(c, user.image, img!!)
                     }
 
 
@@ -221,15 +210,13 @@ class FirebaseRepo {
                         println("Main: $it")
                         val myUri = it.toString()
 
-                        val ref = FirebaseDatabase.getInstance().reference.child("Users")
-
                         val userMap = HashMap<String, Any>()
                         userMap["fullname"] = fullname
                         userMap["username"] = username
                         userMap["bio"] = bio
                         userMap["image"] = myUri
 
-                        ref.child(mAuth.currentUser!!.uid).updateChildren(userMap)
+                        userRef.child(mAuth.currentUser!!.uid).updateChildren(userMap)
 
                         Toast.makeText(
                             c,
@@ -249,8 +236,6 @@ class FirebaseRepo {
 
     fun updateUserInfoOnly(fullname: String, username: String, bio: String, c: Context) {
 
-        val userRef = ref.child("Users")
-
         val userMap = HashMap<String, Any>()
         userMap["fullname"] = fullname
         userMap["username"] = username
@@ -259,15 +244,11 @@ class FirebaseRepo {
         userRef.child(mAuth.currentUser!!.uid).updateChildren(userMap)
 
         Toast.makeText(c, "Account info updated succefully", Toast.LENGTH_LONG).show()
-
-        val intent = Intent(c, MainActivity::class.java)
-        c.startActivity(intent)
     }
 
     fun retrievePosts(postList: MutableLiveData<MutableList<Post>>) {
 
-        val postsRef = ref.child("Posts")
-        var mPostList = mutableListOf<Post>()
+        val mPostList = mutableListOf<Post>()
 
         postsRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
@@ -279,8 +260,6 @@ class FirebaseRepo {
                     val post = snapshot.getValue(Post::class.java)
 
                     mPostList.add(post!!)
-
-
                 }
 
                 postList.value = mPostList
@@ -288,58 +267,47 @@ class FirebaseRepo {
         })
     }
 
-
-    fun uploadPost(v: View, postDescription: String) {
-
-        val postRef = ref.child("Posts")
+    fun uploadPost(postDescription: String) {
 
         val sdf = SimpleDateFormat("HH:mm, MMM d, yyyy ", Locale.US)
         val now = sdf.format(Calendar.getInstance().time)
 
-        val postId = postRef.push().key
+        val postId = postsRef.push().key
 
         val postMap = HashMap<String, Any>()
         postMap["postId"] = postId!!
         postMap["postTime"] = now
         postMap["postDescription"] = postDescription
-        postMap["publisher"] = FirebaseAuth.getInstance().currentUser!!.uid
+        postMap["publisher"] = mAuth.currentUser!!.uid
 
-        postRef.child(postId).updateChildren(postMap)
-
-
-        val uploadFragment = UploadFragment()
-        uploadFragment.onSNACK(v, "Uploaded Successfully")
+        postsRef.child(postId).updateChildren(postMap)
 
     }
 
-    fun getPost(postId: String, postList: MutableList<Post>) {
-        val postRef =
-            ref.child("Posts").child(postId)
+    fun getPost(postId: String, post_: MutableLiveData<Post>) {
+
+        val postRef = postsRef.child(postId)
 
         postRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
 
-                postList.clear()
-
                 val post = p0.getValue(Post::class.java)
                 if (post != null) {
-                    postList.add(post)
+
+                    post_.value = post
                 }
 
             }
 
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
+            override fun onCancelled(p0: DatabaseError) {}
         })
     }
 
     fun myPost(profileId: String, postList: MutableLiveData<MutableList<Post>>) {
 
-        val postRef = ref.child("Posts")
-        var mPostList = mutableListOf<Post>()
+        val mPostList = mutableListOf<Post>()
 
-        postRef.addValueEventListener(object : ValueEventListener {
+        postsRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
             override fun onDataChange(p0: DataSnapshot) {
 
@@ -363,9 +331,7 @@ class FirebaseRepo {
 
     fun getTotalPosts(profileId: String, total_posts: TextView) {
 
-        val postRef = ref.child("Posts")
-
-        postRef.addValueEventListener(object : ValueEventListener {
+        postsRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
             override fun onDataChange(p0: DataSnapshot) {
                 if (p0.exists()) {
@@ -402,8 +368,8 @@ class FirebaseRepo {
 
     fun getTotalFollowing(profileId: String, total_following: TextView?) {
 
-        val followersRef = FirebaseDatabase.getInstance().reference.child("Follow")
-            .child(profileId).child("Following")
+        val followersRef = ref.child("Follow")
+                                    .child(profileId).child("Following")
 
         followersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(ds: DataSnapshot) {
@@ -419,8 +385,7 @@ class FirebaseRepo {
     fun checkFollowingAndFollowButtonStatus(profileId: String, followBtn: Button) {
 
         val followingRef = mAuth.currentUser!!.uid.let {
-            ref.child("Follow")
-                .child(it).child("Following")
+            ref.child("Follow").child(it).child("Following")
         }
         followingRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(ds: DataSnapshot) {
@@ -440,13 +405,13 @@ class FirebaseRepo {
     fun follow(profileId: String) {
 
         mAuth.currentUser!!.uid.let {
-            FirebaseDatabase.getInstance().reference.child("Follow")
+            ref.child("Follow")
                 .child(it).child("Following").child(profileId)
                 .setValue(true)
         }
 
-        mAuth.currentUser!!.uid.let {
-            FirebaseDatabase.getInstance().reference.child("Follow")
+       mAuth.currentUser!!.uid.let {
+            ref.child("Follow")
                 .child(profileId).child("Followers").child(it)
                 .setValue(true)
         }
@@ -458,14 +423,14 @@ class FirebaseRepo {
     fun unFollow(profileId: String) {
 
         mAuth.currentUser!!.uid.let {
-            FirebaseDatabase.getInstance().reference.child("Follow")
-                .child(it.toString()).child("Following").child(profileId)
+            ref.child("Follow")
+                .child(it).child("Following").child(profileId)
                 .removeValue()
         }
 
         mAuth.currentUser!!.uid.let {
-            FirebaseDatabase.getInstance().reference.child("Follow")
-                .child(profileId).child("Followers").child(it.toString())
+            ref.child("Follow")
+                .child(profileId).child("Followers").child(it)
                 .removeValue()
         }
 
@@ -473,8 +438,7 @@ class FirebaseRepo {
 
     fun checkSavedStatus(postId: String, imageView: ImageView) {
 
-        val saveRef = ref.child("Saves")
-            .child(mAuth.currentUser!!.uid)
+        val saveRef = ref.child("Saves").child(mAuth.currentUser!!.uid)
 
         saveRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
@@ -514,7 +478,6 @@ class FirebaseRepo {
 
     }
 
-
     fun addComment(add_comment: TextView, postId: String, publisherId: String) {
 
         val commentsRef = ref.child("Comments").child(postId)
@@ -530,12 +493,9 @@ class FirebaseRepo {
         add_comment.text = ""
     }
 
-    fun readComments(
-        commentList: MutableList<Comment>,
-        postId: String,
-        commentAdapter: CommentsAdapter
+    fun readComments(postId: String, commentList: MutableLiveData<MutableList<Comment>>
     ) {
-
+        val mCommentList = mutableListOf<Comment>()
         val commentRef = ref.child("Comments").child(postId)
 
         commentRef.addValueEventListener(object : ValueEventListener {
@@ -543,15 +503,15 @@ class FirebaseRepo {
             override fun onCancelled(p0: DatabaseError) {}
             override fun onDataChange(p0: DataSnapshot) {
                 if (p0.exists()) {
-                    commentList.clear()
+                    mCommentList.clear()
 
                     for (sp in p0.children) {
                         val comment = sp.getValue(Comment::class.java)
 
-                        commentList.add(comment!!)
+                        mCommentList.add(comment!!)
                     }
-                    commentAdapter.notifyDataSetChanged()
 
+                    commentList.value = mCommentList
                 }
             }
         })
@@ -567,7 +527,6 @@ class FirebaseRepo {
         nMap["Post"] = true
 
         notifyRef.push().setValue(nMap)
-
     }
 
     fun addNotificationLike(userId: String, postId: String) {
@@ -580,14 +539,10 @@ class FirebaseRepo {
         nMap["Post"] = true
 
         notifyRef.push().setValue(nMap)
-
-
     }
 
     fun addNotificationFollow(profileId: String) {
-        val notifyRef = FirebaseDatabase.getInstance().reference
-            .child("Notifications")
-            .child(profileId)
+        val notifyRef = ref.child("Notifications").child(profileId)
 
         val nMap = java.util.HashMap<String, Any>()
         nMap["userId"] = mAuth.currentUser!!.uid
@@ -596,16 +551,13 @@ class FirebaseRepo {
         nMap["Post"] = false
 
         notifyRef.push().setValue(nMap)
-
-
     }
-
 
     fun readNotifications(notifications: MutableLiveData<MutableList<Notification>>) {
 
         val notifyRef = ref.child("Notifications").child(mAuth.currentUser!!.uid)
 
-        var mNotifications = mutableListOf<Notification>()
+        val mNotifications = mutableListOf<Notification>()
 
         notifyRef.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
@@ -632,25 +584,20 @@ class FirebaseRepo {
     fun retrieveUsers(_text: TextView?, users: MutableList<User>?, userAdapter: UserAdapter?) {
 
         val userRef = ref.child("Users")
-        userRef.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
 
-            }
+        userRef.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(ds: DataSnapshot) {
                 if (_text.toString() == "") {
                     users?.clear()
-
                     for (snapshot in ds.children) {
                         val user = snapshot.getValue(User::class.java)
-
-                        //println("Retrieve Users : $user")
 
                         if (user != null) {
                             users?.add(user)
                         }
                     }
-                    println("Retrieve Users : $users")
                     userAdapter?.notifyDataSetChanged()
                 }
             }
@@ -659,10 +606,7 @@ class FirebaseRepo {
 
     fun searchUser(s: String, users: MutableList<User>, userAdapter: UserAdapter?) {
 
-        val query = FirebaseDatabase.getInstance().reference.child("Users")
-            .orderByChild("fullname")
-            .startAt(s)
-            .endAt(s + "\uf8ff")
+        val query = userRef.orderByChild("fullname").startAt(s).endAt(s + "\uf8ff")
 
         query.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
@@ -673,19 +617,14 @@ class FirebaseRepo {
                 for (snapshot in ds.children) {
                     val user = snapshot.getValue(User::class.java)
 
-                    //println("Search Users : $user")
-
                     if (user != null) {
                         users.add(user)
-                        println("snapshot Users : $user")
-                        println("Search Users : $users")
                     }
                 }
 
                 userAdapter?.notifyDataSetChanged()
             }
         })
-
     }
 
 }

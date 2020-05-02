@@ -1,4 +1,4 @@
-package com.x.unncrimewatch_k.ui.home
+package com.x.myunn.ui.home
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,9 +24,6 @@ class HomeViewModel : ViewModel() {
     val myRef = database.getReference("Posts")
 
     val firebaseRepo = FirebaseRepo()
-
-
-    //var l_postList = MutableLiveData<MutableList<Post>>()
 
     var postList = loadPosts()
 

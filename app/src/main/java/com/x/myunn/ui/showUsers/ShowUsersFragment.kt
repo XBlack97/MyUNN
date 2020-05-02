@@ -1,6 +1,5 @@
 package com.x.myunn.ui.showUsers
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.x.myunn.R
 import com.x.myunn.adapter.UserAdapter
-import com.x.unncrimewatch_k.ui.home.ShowUsersViewModelFactory
 import kotlinx.android.synthetic.main.fragment_show_users.view.*
 
 class ShowUsersFragment : Fragment() {
@@ -36,14 +35,18 @@ class ShowUsersFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val pref = context?.getSharedPreferences("PREFS", Context.MODE_PRIVATE)
+        val safeArgs : ShowUsersFragmentArgs by navArgs()
 
-        if (pref != null) {
-            this.id = pref.getString("id", "none").toString()
-            this.title = pref.getString("title", "none").toString()
-        }
+        val id: String = safeArgs.id
+        val title: String = safeArgs.tiltle
 
-        viewModelFactory = ShowUsersViewModelFactory(requireContext())
+        this.title = title
+        this.id = id
+
+
+        viewModelFactory = ShowUsersViewModelFactory(requireContext(), safeArgs)
+
+
 
     }
 
@@ -52,7 +55,6 @@ class ShowUsersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_show_users, container, false)
-
 
 
         view.show_user_toolbar_text.text = title
@@ -87,7 +89,6 @@ class ShowUsersFragment : Fragment() {
 
             userAdapter = UserAdapter(requireContext(), it, false)
 
-            println("ShowUsers List: $it")
             recyclerView.adapter = userAdapter
 
             userAdapter.notifyDataSetChanged()
@@ -117,6 +118,5 @@ class ShowUsersFragment : Fragment() {
     })
     }
      */
-
 
 }

@@ -15,7 +15,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/post_like_btn"
+            android:id="@+id/postdetail_like_btn"
             app:srcCompat="@drawable/ic_like"
             android:layout_width="20dp"
             android:layout_height="20dp" />
@@ -33,7 +33,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/post_comment_btn"
+            android:id="@+id/postdetail_comment_btn"
             app:srcCompat="@drawable/ic_comments"
             android:layout_width="20dp"
             android:layout_height="20dp" />
@@ -50,7 +50,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/post_save_btn"
+            android:id="@+id/postdetail_save_btn"
             android:layout_width="20dp"
             android:layout_height="20dp"
             app:srcCompat="@drawable/ic_star_unsaved_24dp" />

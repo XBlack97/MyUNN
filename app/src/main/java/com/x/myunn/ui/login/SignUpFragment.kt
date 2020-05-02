@@ -13,9 +13,6 @@ import com.x.myunn.firebase.FirebaseRepo
 import kotlinx.android.synthetic.main.sign_up_fragment.*
 import kotlinx.android.synthetic.main.sign_up_fragment.view.*
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
 class SignUpFragment : Fragment() {
 
     lateinit var fullname: String
@@ -24,7 +21,7 @@ class SignUpFragment : Fragment() {
     lateinit var password: String
     lateinit var password2: String
 
-    val firebaseRepo = FirebaseRepo()
+    //val firebaseRepo = FirebaseRepo()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +75,7 @@ class SignUpFragment : Fragment() {
 
 
             else -> {
-                firebaseRepo.CreateAccount(fullname, username, email, password, requireContext())
+                FirebaseRepo().CreateAccount(fullname, username, email, password, requireContext())
             }
 
         }

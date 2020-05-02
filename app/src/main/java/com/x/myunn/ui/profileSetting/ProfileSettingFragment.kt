@@ -9,19 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.storage.StorageReference
 import com.theartofdev.edmodo.cropper.CropImage
 import com.x.myunn.R
 import com.x.myunn.activities.LogInActivity
 import com.x.myunn.firebase.FirebaseRepo
-import com.x.unncrimewatch_k.ui.profile.ProfileSettingViewModel
-import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.view.*
 
@@ -35,14 +30,10 @@ class ProfileSettingFragment : Fragment() {
     val firebaseRepo = FirebaseRepo()
 
     val mAuth = FirebaseAuth.getInstance()
-    private lateinit var firebaseUser: FirebaseUser
-    private var checker = ""
-    private var myUri = ""
-    private lateinit var imageUri: Uri
-    private var storageProfilePicRef: StorageReference? = null
 
-    lateinit var navController: NavController
-    lateinit var mainProfileImageView: CircleImageView
+    private var checker = ""
+    private lateinit var imageUri: Uri
+
 
 
     override fun onCreateView(
@@ -55,9 +46,6 @@ class ProfileSettingFragment : Fragment() {
 
         val bnv = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
         bnv.visibility = View.GONE
-
-        navController = findNavController(requireActivity(), R.id.nav_host_fragment)
-
 
         view.logout_btn.setOnClickListener {
             mAuth.signOut()
@@ -76,7 +64,9 @@ class ProfileSettingFragment : Fragment() {
         }
 
         view.close_profile_btn.setOnClickListener {
-            navController.navigate(R.id.action_profileSettingFragment_to_nav_profile)
+            findNavController()
+                .navigate(R.id.action_nav_profilesetting_to_nav_profile)
+
         }
 
         view.change_image_text_btn.setOnClickListener {
@@ -96,13 +86,12 @@ class ProfileSettingFragment : Fragment() {
 
         val viewModelFactory = ProfileViewSettingModelFactory()
         profileSettingViewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(ProfileSettingViewModel::class.java)
+            ViewModelProvider(this, viewModelFactory).get(ProfileSettingViewModel::class.java)
 
         profileSettingViewModel.loadUserInfo(
             mAuth.currentUser!!.uid, profile_image_view_setting, full_name_profile_setting,
             username_profile_setting, bio_profile_setting, requireContext()
         )
-
 
     }
 
@@ -115,7 +104,6 @@ class ProfileSettingFragment : Fragment() {
 
             profile_image_view_setting.setImageURI(imageUri)
 
-            println("Image: $imageUri")
         } else {
             println("img is null here")
         }
@@ -155,7 +143,6 @@ class ProfileSettingFragment : Fragment() {
                     this@ProfileSettingFragment.requireContext()
                 )
 
-                //navController.navigate(R.id.action_profileFragment_to_navigation_home)
             }
         }
     }
@@ -191,36 +178,10 @@ class ProfileSettingFragment : Fragment() {
                     bio,
                     requireContext()
                 )
-
-                //navController.navigate(R.id.action_profileFragment_to_navigation_home)
             }
         }
 
 
     }
-
-//    private fun userInfo(user: User) {
-//
-//
-////                    Picasso.get().load(user!!.image).placeholder(R.drawable.profile)
-////                        .into(profile_image_view_setting)
-////                    username_profile_setting.setText(user.username)
-////                    full_name_profile_setting.setText(user.fullname)
-////                    bio_profile_setting.setText(user.bio)
-//
-//        Glide.with(context!!)
-//            .load(user.image)
-//            .apply(
-//                RequestOptions()
-//                .placeholder(R.drawable.loading_animation)
-//                .error(R.drawable.ic_broken_image))
-//            .into(profile_image_view_setting)
-//
-//
-//        username_profile_setting.setText(user.username)
-//        full_name_profile_setting.setText(user.fullname)
-//        bio_profile_setting.setText(user.bio)
-//
-//     }
 
 }

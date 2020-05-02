@@ -1,15 +1,15 @@
-package com.x.myunn.ui.profile
+package com.x.myunn.ui.postDetail
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 
-class ProfileViewModelFactory(val c: Context, val safeArgs : ProfileFragmentArgs) : ViewModelProvider.Factory {
+class PostDetialViewModelFactory(val c: Context, val safeArgs : PostDetailFragmentArgs) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-            return ProfileViewModel(c, safeArgs) as T
+        if (modelClass.isAssignableFrom(PostDetailViewModel::class.java)) {
+            return PostDetailViewModel(c, safeArgs) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

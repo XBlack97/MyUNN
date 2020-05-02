@@ -7,7 +7,6 @@ import com.x.myunn.model.Notification
 
 class NotificationsViewModel : ViewModel() {
 
-
     val firebaseRepo = FirebaseRepo()
 
     val notifications = loadNotifications()

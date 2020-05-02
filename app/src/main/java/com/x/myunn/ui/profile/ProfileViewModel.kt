@@ -5,18 +5,28 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.Post
 import de.hdodenhof.circleimageview.CircleImageView
 
-class ProfileViewModel(c: Context) : ViewModel() {
+class ProfileViewModel(c: Context, safeArgs : ProfileFragmentArgs) : ViewModel() {
 
     val firebaseRepo = FirebaseRepo()
 
-    val pref = c.getSharedPreferences("PREFS", Context.MODE_PRIVATE)
-    val profileId = pref.getString("profileId", "none").toString()
+    val profile_Id = safeArgs.profileId
 
-    //val profileId = ProfileFragment.newInstance().profileId
+    var profileId: String
+
+    init {
+
+        if (profile_Id == "user"){
+            profileId = FirebaseAuth.getInstance().currentUser!!.uid
+        }else{
+            this.profileId = profile_Id
+        }
+
+    }
 
 
     var postList = myPost(profileId)

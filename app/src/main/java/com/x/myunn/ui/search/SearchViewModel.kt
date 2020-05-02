@@ -14,14 +14,11 @@ class SearchViewModel : ViewModel() {
 
         firebaseRepo.retrieveUsers(_text, users, userAdapter)
 
-        println("ViewModel Retrieve Users : $users")
     }
 
     fun searchUser(s: String, users: MutableList<User>, userAdapter: UserAdapter?) {
 
         firebaseRepo.searchUser(s, users, userAdapter)
-
-        println("ViewModel search Users : $users")
 
     }
 }

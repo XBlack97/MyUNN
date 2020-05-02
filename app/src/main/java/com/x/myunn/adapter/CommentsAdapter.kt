@@ -5,9 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -15,8 +14,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.x.myunn.R
+import com.x.myunn.activities.MainActivity
 import com.x.myunn.model.Comment
 import com.x.myunn.model.User
+import com.x.myunn.ui.postDetail.PostDetailFragmentDirections
 
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -24,6 +25,8 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
     RecyclerView.Adapter<CommentsAdapter.Viewholder>() {
 
     private var firebaseUser: FirebaseUser? = null
+
+    private val main = MainActivity.newInstance()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Viewholder {
@@ -42,9 +45,15 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
         firebaseUser = FirebaseAuth.getInstance().currentUser
         val comment = commentList!![position]
 
-        holder.commet.text = comment.comment
+        holder.comment.text = comment.comment
 
         getUserInfo(holder.imageProfile, holder.userName, comment.publisher)
+
+        holder.imageProfile.setOnClickListener {
+            val action = PostDetailFragmentDirections
+                .actionPostDetailFragmentToNavProfile(comment.publisher)
+            it.findNavController().navigate(action)
+        }
 
     }
 
@@ -61,14 +70,7 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
 
                     userName.text = user!!.username
 
-                    Glide.with(c)
-                        .load(user.image)
-                        .apply(
-                            RequestOptions()
-                                .placeholder(R.drawable.loading_animation)
-                                .error(R.drawable.ic_broken_image)
-                        )
-                        .into(imageProfile)
+                    main.glideLoad(c, user.image, imageProfile)
 
 
                 }
@@ -80,16 +82,9 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
 
     inner class Viewholder(v: View) : RecyclerView.ViewHolder(v) {
 
-        var imageProfile: CircleImageView
-        var userName: TextView
-        var commet: TextView
-
-        init {
-            imageProfile = v.findViewById(R.id.user_profile_image_comment)
-            userName = v.findViewById(R.id.user_name_comment)
-            commet = v.findViewById(R.id.comment_text_comment)
-
-        }
+        var imageProfile: CircleImageView = v.findViewById(R.id.user_profile_image_comment)
+        var userName: TextView = v.findViewById(R.id.user_name_comment)
+        var comment: TextView = v.findViewById(R.id.comment_text_comment)
 
     }
 }

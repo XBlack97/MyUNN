@@ -9,11 +9,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.x.myunn.model.User
 
-class ShowUsersViewModel(c: Context) : ViewModel() {
+class ShowUsersViewModel(c: Context, safeArgs: ShowUsersFragmentArgs) : ViewModel() {
 
 
-    val pref = c.getSharedPreferences("PREFS", Context.MODE_PRIVATE)
-    val id = pref.getString("id", "none").toString()
+    val id = safeArgs.id
 
     var userList = mutableListOf<User>()
     var idList = mutableListOf<String>()
@@ -25,7 +24,6 @@ class ShowUsersViewModel(c: Context) : ViewModel() {
 
 
     fun getFollowers() {
-
 
         val followersRef = FirebaseDatabase.getInstance().reference.child("Follow")
             .child(id).child("Followers")
@@ -49,7 +47,6 @@ class ShowUsersViewModel(c: Context) : ViewModel() {
     }
 
     fun getFollowing() {
-
 
         val followersRef = FirebaseDatabase.getInstance().reference.child("Follow")
             .child(id).child("Following")
@@ -121,13 +118,5 @@ class ShowUsersViewModel(c: Context) : ViewModel() {
         return l_userList
     }
 
-    fun myPost(profileId: String): MutableLiveData<MutableList<User>> {
-
-        val l_postList = MutableLiveData<MutableList<User>>()
-
-        // firebaseRepo.myPost(profileId, l_postList)
-
-        return l_postList
-    }
 
 }

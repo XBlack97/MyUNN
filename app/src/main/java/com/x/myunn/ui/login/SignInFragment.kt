@@ -8,20 +8,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.FirebaseAuth
 import com.x.myunn.R
 import com.x.myunn.firebase.FirebaseRepo
 import kotlinx.android.synthetic.main.sign_in_fragment.view.*
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
-
 class SignInFragment : Fragment() {
-
-    val mAuth = FirebaseAuth.getInstance()
-
-    val firebaseRepo = FirebaseRepo()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +30,6 @@ class SignInFragment : Fragment() {
 
         view.sign_up_new.setOnClickListener {
 
-
             findNavController().navigate(R.id.action_SignInFrag_to_SignUpFrag)
         }
 
@@ -49,6 +39,7 @@ class SignInFragment : Fragment() {
     }
 
     private fun loginUser() {
+        //val firebaseRepo = FirebaseRepo()
 
         val email = requireView().signin_email.text.toString()
         val password = requireView().signin_password.text.toString()
@@ -66,7 +57,7 @@ class SignInFragment : Fragment() {
             ).show()
             else -> {
 
-                firebaseRepo.loginUser(email, password, requireContext())
+                FirebaseRepo().loginUser(email, password, requireContext())
             }
         }
     }

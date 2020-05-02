@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.x.unncrimewatch_k.firebase.FirebaseHandler"
+        android:name=".firebase.FirebaseHandler"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -28,8 +28,6 @@
             </intent-filter>
 
         </activity>
-
-        <activity android:name=".activities.PostDetailActivty" />
 
         <activity
             android:name=".activities.MainActivity"

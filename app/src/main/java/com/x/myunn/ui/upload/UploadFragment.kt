@@ -1,4 +1,4 @@
-package com.x.unncrimewatch_k.ui.uploadFeed
+package com.x.myunn.ui.upload
 
 import android.graphics.Color
 import android.os.Bundle
@@ -6,15 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.x.myunn.R
-import kotlinx.android.synthetic.main.fragment_upload.*
 import kotlinx.android.synthetic.main.fragment_upload.view.*
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -28,7 +27,6 @@ class UploadFragment : Fragment() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main + uploadFragmentJob)
 
-    lateinit var navController: NavController
 
     var bnv: BottomNavigationView? = null
 
@@ -56,11 +54,9 @@ class UploadFragment : Fragment() {
 //
         val viewModelFactory = UploadViewModelFactory()
 
-        uploadViewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(UploadViewModel::class.java)
+        uploadViewModel = ViewModelProvider(this, viewModelFactory).get(UploadViewModel::class.java)
 
 
-        navController = findNavController(requireActivity(), R.id.nav_host_fragment)
 
         view.upload_post.setOnClickListener {
             uiScope.launch {
@@ -96,7 +92,7 @@ class UploadFragment : Fragment() {
 
     fun uploadFeed(v: View) {
 
-        val postDescription = post_text.text.toString()
+        val postDescription = requireView().post_text.text.toString()
 
         if (postDescription.isBlank()) {
             bnv!!.visibility = View.GONE
@@ -104,9 +100,10 @@ class UploadFragment : Fragment() {
 
         } else {
 
-            uploadViewModel.uploadPost(v, postDescription)
+            uploadViewModel.uploadPost(postDescription)
+            findNavController().navigate(R.id.action_nav_upload_to_nav_home)
+            Toast.makeText(requireContext(), "Uploaded Sucessfully", Toast.LENGTH_LONG).show()
 
-            navController.navigate(R.id.action_uploadFragment_to_navigation_home)
         }
 
     }

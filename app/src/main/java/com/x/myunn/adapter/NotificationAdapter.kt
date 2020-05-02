@@ -1,19 +1,17 @@
 package com.x.myunn.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.x.myunn.R
-import com.x.myunn.activities.PostDetailActivty
 import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.Notification
+import com.x.myunn.ui.notifications.NotificationsFragmentDirections
 import de.hdodenhof.circleimageview.CircleImageView
 
 class NotificationAdapter(
@@ -23,8 +21,7 @@ class NotificationAdapter(
     RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
 
     val firebaseRepo = FirebaseRepo()
-    var navController =
-        Navigation.findNavController((c as FragmentActivity), R.id.nav_host_fragment)
+    //var navController = Navigation.findNavController((c as FragmentActivity), R.id.nav_host_fragment)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(c).inflate(R.layout.notification_item_layout, parent, false)
@@ -69,21 +66,29 @@ class NotificationAdapter(
         }
 
         holder.itemView.setOnClickListener {
+
             if (notification.Post) {
-                val detailIntent = Intent(c, PostDetailActivty::class.java)
-                detailIntent.putExtra("postId", notification.postId)
-                detailIntent.putExtra("publisherId", notification.userId)
 
-                c.startActivity(detailIntent)
+                val postId = notification.postId
+                val publisherId = notification.userId
+                val action = NotificationsFragmentDirections
+                    .actionNavNotificationsToPostDetailFragment(postId, publisherId)
+                it.findNavController().navigate(action)
 
-            } else {
+            }else {
 
-                val editor = c.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit()
-                editor.putString("profileId", notification.userId)
-                editor.apply()
-
-                navController.navigate(R.id.action_navigation_notifications_to_nav_profile)
+                val publisherId = notification.userId
+                val action = NotificationsFragmentDirections.actionNavNotificationsToNavProfile(publisherId)
+                it.findNavController().navigate(action)
             }
+
+        }
+
+        holder.profileImage.setOnClickListener {
+            val profileId = notification.userId
+            val action = NotificationsFragmentDirections
+                .actionNavNotificationsToNavProfile(profileId)
+            it.findNavController().navigate(action)
         }
 
     }

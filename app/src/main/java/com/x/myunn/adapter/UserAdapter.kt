@@ -8,28 +8,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.x.myunn.R
+import com.x.myunn.activities.MainActivity
 import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.User
-import com.x.myunn.ui.profile.ProfileFragment
+import com.x.myunn.ui.search.SearchFragmentDirections
+import com.x.myunn.ui.showUsers.ShowUsersFragmentDirections
 import de.hdodenhof.circleimageview.CircleImageView
 
 class UserAdapter(
     private var c: Context,
     private var mUser: MutableList<User>,
-    private var isFragment: Boolean = false
+    private var isSearch: Boolean = false
 ) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
 
     val firebaseRepo = FirebaseRepo()
 
-    var navController =
-        Navigation.findNavController((c as FragmentActivity), R.id.nav_host_fragment)
+    val main = MainActivity.newInstance()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(c).inflate(R.layout.user_item_list_view, parent, false)
@@ -47,35 +46,24 @@ class UserAdapter(
         holder.username.text = "@${user.username}"
         holder.fullname.text = user.fullname
 
-        Glide.with(c)
-            .load(user.image)
-            .apply(
-                RequestOptions()
-                    .placeholder(R.drawable.loading_animation)
-                    .error(R.drawable.ic_broken_image)
-            )
-            .into(holder.userImage)
+        main.glideLoad(c, user.image, holder.userImage)
 
         firebaseRepo.checkFollowingAndFollowButtonStatus(user.uid, holder.follow_btn)
 
         holder.itemView.setOnClickListener {
-            if (isFragment) {
-                val pref = c.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit()
-                pref.putString("profileId", user.uid)
-                pref.apply()
+            if (isSearch) {
 
-                (c as FragmentActivity).supportFragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment, ProfileFragment())
-                    .addToBackStack(null)
-                    .commit()
+                val profileId = user.uid
+                val acton = SearchFragmentDirections.actionNavSearchToNavProfile(profileId)
+                it.findNavController().navigate(acton)
 
-                //navController.navigate(R.id.action_showUsersFragment_to_nav_profile)
 
             } else {
 
-//                val intent = Intent(c, MainActivity::class.java)
-//                intent.putExtra("publisherId", user.uid)
-//                c.startActivity(intent)
+                val profileId = user.uid
+                val acton = ShowUsersFragmentDirections.actionNavShowusersToNavProfile(profileId)
+                it.findNavController().navigate(acton)
+//
             }
 
         }

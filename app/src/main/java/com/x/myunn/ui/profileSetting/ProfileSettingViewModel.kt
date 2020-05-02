@@ -1,4 +1,4 @@
-package com.x.unncrimewatch_k.ui.profile
+package com.x.myunn.ui.profileSetting
 
 import android.content.Context
 import android.net.Uri
@@ -10,8 +10,6 @@ import de.hdodenhof.circleimageview.CircleImageView
 class ProfileSettingViewModel : ViewModel() {
 
     val firebaseRepo = FirebaseRepo()
-
-    //var user = firebaseRepo.userInfo()
 
     fun loadUserInfo(
         profileId: String,
@@ -45,6 +43,5 @@ class ProfileSettingViewModel : ViewModel() {
 
         firebaseRepo.updateUserInfoOnly(fullname, username, bio, c)
     }
-
 
 }

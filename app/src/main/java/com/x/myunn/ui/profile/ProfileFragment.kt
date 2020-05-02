@@ -1,6 +1,5 @@
 package com.x.myunn.ui.profile
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -8,22 +7,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.x.myunn.R
 import com.x.myunn.activities.LogInActivity
 import com.x.myunn.adapter.PostAdapter
-import com.x.myunn.ui.showUsers.ShowUsersFragment
-import com.x.unncrimewatch_k.ui.home.ProfileViewModelFactory
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.profile_info.*
 import kotlinx.android.synthetic.main.profile_info.view.*
@@ -35,32 +30,16 @@ class ProfileFragment : Fragment() {
     }
 
     lateinit var profileId: String
+    lateinit var profile_Id: String
+
     private lateinit var firebaseUser: FirebaseUser
 
     private lateinit var viewModel: ProfileViewModel
     private lateinit var profifeRecyclerView: RecyclerView
 
-    lateinit var swipeRefresh: SwipeRefreshLayout
-
     lateinit var postAdapter: PostAdapter
 
     lateinit var viewModelFactory: ProfileViewModelFactory
-
-    lateinit var navController: NavController
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val pref = context?.getSharedPreferences("PREFS", Context.MODE_PRIVATE)
-
-        if (pref != null) {
-            this.profileId = pref.getString("profileId", "none").toString()
-        } else {
-            Toast.makeText(requireContext(), "profileId: null", Toast.LENGTH_LONG).show()
-        }
-
-    }
 
 
     override fun onCreateView(
@@ -69,19 +48,25 @@ class ProfileFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        navController =
-            Navigation.findNavController((context as FragmentActivity), R.id.nav_host_fragment)
-
-
-        setHasOptionsMenu(true)
+        val bvn = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+        bvn.visibility = View.VISIBLE
 
 
         firebaseUser = FirebaseAuth.getInstance().currentUser!!
 
-        viewModelFactory = ProfileViewModelFactory(requireContext())
+        setHasOptionsMenu(true)
 
+        val safeArgs : ProfileFragmentArgs by navArgs()
+        profile_Id = safeArgs.profileId
 
-        swipeRefresh = view.findViewById(R.id.profile_swipeRefresh)
+        if (profile_Id == "user"){
+            this.profileId = firebaseUser.uid
+        }else{
+            this.profileId = profile_Id
+        }
+
+        viewModelFactory = ProfileViewModelFactory(requireContext(), safeArgs)
+
 
         profifeRecyclerView = view.findViewById(R.id.profile_recycler_view)
         profifeRecyclerView.setHasFixedSize(true)
@@ -90,7 +75,7 @@ class ProfileFragment : Fragment() {
         profifeRecyclerView.layoutManager = linearLayoutManager
 
 
-        val bnv = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+//        val bnv = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
 
 //        profifeRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 //
@@ -108,7 +93,6 @@ class ProfileFragment : Fragment() {
 //                super.onScrollStateChanged(recyclerView, newState)
 //            }
 //        })
-
 
         view.followButton.setOnClickListener {
             val getButtonText = view.followButton.text.toString()
@@ -130,52 +114,27 @@ class ProfileFragment : Fragment() {
         }
 
         view.followersCounter.setOnClickListener {
-//            val intent = Intent(context, ShowUsersFragment::class.java)
-//            intent.putExtra("id", profileId)
-//            intent.putExtra("title", "followers")
-//            startActivity(intent)
 
-            val editor =
-                (context as FragmentActivity).getSharedPreferences("PREFS", Context.MODE_PRIVATE)
-                    .edit()
-            editor.putString("id", profileId)
-            editor.putString("title", "Followers")
-            editor.apply()
+            val id = profileId
+            val title = "Followers"
+            val action = ProfileFragmentDirections
+                .actionNavProfileToNavShowusers(title, id)
+            findNavController().navigate(action)
 
-            (context as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment, ShowUsersFragment())
-                .addToBackStack(null)
-                .commit()
-
-            //navController.navigate(R.id.action_nav_profile_to_showUsersFragment)
         }
 
         view.followingsCounter.setOnClickListener {
-//            val intent = Intent(context, ShowUsersActivity::class.java)
-//            intent.putExtra("id", profileId)
-//            intent.putExtra("title", "following")
-//            startActivity(intent)
+            val id = profileId
+            val title = "Following"
+            val action = ProfileFragmentDirections
+                .actionNavProfileToNavShowusers(title, id)
+            findNavController().navigate(action)
 
-            val editor =
-                (context as FragmentActivity).getSharedPreferences("PREFS", Context.MODE_PRIVATE)
-                    .edit()
-            editor.putString("id", profileId)
-            editor.putString("title", "Following")
-            editor.apply()
-
-            (context as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment, ShowUsersFragment())
-                .addToBackStack(null)
-                .commit()
-
-            //navController.navigate(R.id.action_nav_profile_to_showUsersFragment)
         }
-
-
-
 
         return view
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -197,7 +156,7 @@ class ProfileFragment : Fragment() {
                 }
                 R.id.editProfile -> {
                     Toast.makeText(requireContext(), "Edit Profile !!", Toast.LENGTH_LONG).show()
-                    navController.navigate(R.id.action_nav_profile_to_profileSettingFragment)
+                    findNavController().navigate(R.id.action_nav_profile_to_nav_profilesetting)
                     true
                 }
                 else -> {
@@ -225,13 +184,11 @@ class ProfileFragment : Fragment() {
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(ProfileViewModel::class.java)
 
-
         // Observe the model
         viewModel.postList.observe(this.viewLifecycleOwner, Observer { posts ->
             // Data bind the recycler view
 
-
-            postAdapter = PostAdapter(requireContext(), posts)
+            postAdapter = PostAdapter(requireContext(), posts, true)
             profifeRecyclerView.adapter = postAdapter
             postAdapter.notifyDataSetChanged()
 
@@ -256,7 +213,9 @@ class ProfileFragment : Fragment() {
         if (profileId == firebaseUser.uid) {
             requireView().followButton.visibility = View.GONE
         } else if (profileId != firebaseUser.uid) {
+            requireView().followButton.visibility = View.VISIBLE
             viewModel.checkFollowingAndFollowButtonStatus(profileId, followButton)
+
         }
     }
 
@@ -267,30 +226,6 @@ class ProfileFragment : Fragment() {
         inflater.inflate(R.menu.profile_menu, menu)
     }
 
-
-    override fun onStop() {
-        super.onStop()
-
-        val pref = context?.getSharedPreferences("PREFS", Context.MODE_PRIVATE)?.edit()
-        pref?.putString("profileId", firebaseUser.uid)
-        pref?.apply()
-
-    }
-
-    override fun onPause() {
-        super.onPause()
-        val pref = context?.getSharedPreferences("PREFS", Context.MODE_PRIVATE)?.edit()
-        pref?.putString("profileId", firebaseUser.uid)
-        pref?.apply()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        val pref = context?.getSharedPreferences("PREFS", Context.MODE_PRIVATE)?.edit()
-        pref?.putString("profileId", firebaseUser.uid)
-        pref?.apply()
-    }
 
 }
 
