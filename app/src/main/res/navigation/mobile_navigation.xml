@@ -36,10 +36,32 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_dashboard"
-        android:name="com.x.myunn.ui.dashboard.DashboardFragment"
+        android:id="@+id/nav_starredPost"
+        android:name="com.x.myunn.ui.saves.SavesFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_saves" >
+        <action
+            android:id="@+id/action_nav_starredPost_to_nav_profile"
+            app:destination="@id/nav_profile"
+            app:enterAnim="@anim/slide_out_right"
+            app:exitAnim="@anim/slide_in_left"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_nav_starredPost_to_nav_showusers"
+            app:destination="@id/nav_showusers"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_nav_starredPost_to_postDetailFragment"
+            app:destination="@id/postDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_notifications"
@@ -108,6 +130,13 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_nav_profile_to_nav_starredPost"
+            app:destination="@id/nav_starredPost"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/nav_search"
@@ -151,11 +180,11 @@
         <action
             android:id="@+id/action_nav_profilesetting_to_nav_profile"
             app:destination="@id/nav_profile"
-            app:enterAnim="@anim/slide_out_right"
-            app:exitAnim="@anim/slide_in_left"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
             app:launchSingleTop="true"
-            app:popEnterAnim="@anim/slide_out_right"
-            app:popExitAnim="@anim/slide_in_left"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out"
             app:popUpTo="@id/nav_profile"
             app:popUpToInclusive="true" />
     </fragment>

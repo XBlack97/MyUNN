@@ -2,6 +2,7 @@ package com.x.myunn.ui.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,6 +43,18 @@ class ProfileFragment : Fragment() {
 
     lateinit var viewModelFactory: ProfileViewModelFactory
 
+    lateinit var bnv: BottomNavigationView
+
+    val TAG = "TAG"
+
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//
+//        Log.d(TAG, "Profile: onCreate")
+//
+//        bvn.visibility = View.VISIBLE
+//
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,20 +62,32 @@ class ProfileFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        val bvn = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
-        bvn.visibility = View.VISIBLE
+        bnv = requireActivity().findViewById(R.id.nav_view)
+
+        val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if(destination.id == R.id.nav_profile) {
+                bnv.visibility = View.VISIBLE
+                Log.d(TAG, "Profile: bnv visible")
+            } else {
+                bnv.visibility = View.VISIBLE
+            }
+        }
+
+
+        Log.d(TAG, "Profile: onCreateView")
 
 
         firebaseUser = FirebaseAuth.getInstance().currentUser!!
 
         setHasOptionsMenu(true)
 
-        val safeArgs : ProfileFragmentArgs by navArgs()
+        val safeArgs: ProfileFragmentArgs by navArgs()
         profile_Id = safeArgs.profileId
 
-        if (profile_Id == "user"){
+        if (profile_Id == "user") {
             this.profileId = firebaseUser.uid
-        }else{
+        } else {
             this.profileId = profile_Id
         }
 
@@ -74,25 +100,6 @@ class ProfileFragment : Fragment() {
         linearLayoutManager.stackFromEnd = true
         profifeRecyclerView.layoutManager = linearLayoutManager
 
-
-//        val bnv = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
-
-//        profifeRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                if (dy > 0 || dy < 0) {
-//                    bnv.visibility = View.GONE
-//                }
-//            }
-//
-//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                    bnv.visibility = View.VISIBLE
-//                }
-//
-//                super.onScrollStateChanged(recyclerView, newState)
-//            }
-//        })
 
         view.followButton.setOnClickListener {
             val getButtonText = view.followButton.text.toString()
@@ -139,6 +146,10 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d(TAG, "Profile: onViewCreated")
+
+        //bvn.visibility = View.VISIBLE
+
         (activity as AppCompatActivity?)!!.setSupportActionBar(profile_toolbar)
 
         profile_toolbar.overflowIcon =
@@ -157,6 +168,10 @@ class ProfileFragment : Fragment() {
                 R.id.editProfile -> {
                     Toast.makeText(requireContext(), "Edit Profile !!", Toast.LENGTH_LONG).show()
                     findNavController().navigate(R.id.action_nav_profile_to_nav_profilesetting)
+                    true
+                }
+                R.id.starredPost -> {
+                    findNavController().navigate(R.id.action_nav_profile_to_nav_starredPost)
                     true
                 }
                 else -> {
@@ -182,13 +197,17 @@ class ProfileFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        Log.d(TAG, "Profile: onActivityCreated")
+
+        bnv.visibility = View.VISIBLE
+
         viewModel = ViewModelProvider(this, viewModelFactory).get(ProfileViewModel::class.java)
 
         // Observe the model
         viewModel.postList.observe(this.viewLifecycleOwner, Observer { posts ->
             // Data bind the recycler view
 
-            postAdapter = PostAdapter(requireContext(), posts, true)
+            postAdapter = PostAdapter(requireContext(), posts, 2)
             profifeRecyclerView.adapter = postAdapter
             postAdapter.notifyDataSetChanged()
 
@@ -226,6 +245,65 @@ class ProfileFragment : Fragment() {
         inflater.inflate(R.menu.profile_menu, menu)
     }
 
+    /**
 
+    override fun onResume() {
+        super.onResume()
+
+        Log.d(TAG, "Profile: onResume")
+
+        bvn.visibility = View.VISIBLE
+
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "Profile: onStart")
+
+        bvn.visibility = View.VISIBLE
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d(TAG, "-----------------")
+        Log.d(TAG, "Profile: onAttach")
+
+        bvn = requireActivity().findViewById(R.id.nav_view)
+
+        bvn.visibility = View.VISIBLE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "Profile: onPause")
+
+        bvn.visibility = View.VISIBLE
+    }
+
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        Log.d(TAG, "Profile: onViewStateRestored")
+
+        bvn.visibility = View.VISIBLE
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "Profile: onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "Profile: onDestroy")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d(TAG, "Profile: onDetach")
+        Log.d(TAG, "------------------")
+    }
+*/
 }
 

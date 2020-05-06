@@ -67,7 +67,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/app_bar_layout_search"
         android:visibility="gone"
-        tools:listitem="@layout/user_item_list_view">
+        tools:listitem="@layout/item_layout_user">
 
 
     </androidx.recyclerview.widget.RecyclerView>

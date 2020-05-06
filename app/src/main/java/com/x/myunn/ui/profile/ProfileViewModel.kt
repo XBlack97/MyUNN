@@ -50,7 +50,7 @@ class ProfileViewModel(c: Context, safeArgs : ProfileFragmentArgs) : ViewModel()
     ) {
 
         firebaseRepo.loadUserInfo(
-            profileId, profile_image_view_setting, null, full_name_profile_setting,
+            profileId, profile_image_view_setting, full_name_profile_setting,
             username_profile_setting, bio_profile_setting, c
         )
 

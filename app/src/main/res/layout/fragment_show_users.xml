@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/show_user_toolbar"
         android:layout_marginTop="2dp"
-        tools:listitem="@layout/user_item_list_view"
+        tools:listitem="@layout/item_layout_user"
 
         />
 

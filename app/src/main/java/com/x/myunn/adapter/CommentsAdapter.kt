@@ -30,7 +30,7 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Viewholder {
-        val view = LayoutInflater.from(c).inflate(R.layout.comments_item_layout, parent, false)
+        val view = LayoutInflater.from(c).inflate(R.layout.item_layout_comment, parent, false)
 
 
         return Viewholder(view)

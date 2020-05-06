@@ -72,11 +72,11 @@ class UploadFragment : Fragment() {
         snackbar.setActionTextColor(ContextCompat.getColor(view.context, R.color.colorPrimaryDark))
         val snackbarView = snackbar.view
         val tv: TextView = snackbarView.findViewById(R.id.snackbar_text)
-        tv.setTextColor(Color.WHITE)
+        tv.setTextColor(Color.BLACK)
         snackbarView.setBackgroundColor(
             ContextCompat.getColor(
                 view.context,
-                R.color.colorPrimaryDark
+                R.color.light_gray
             )
         )
         snackbar.duration = TimeUnit.SECONDS.toMillis(2).toInt()
@@ -96,7 +96,7 @@ class UploadFragment : Fragment() {
 
         if (postDescription.isBlank()) {
             bnv!!.visibility = View.GONE
-            onSNACK(v, "empty field !!")
+            onSNACK(v, "Empty field !!")
 
         } else {
 

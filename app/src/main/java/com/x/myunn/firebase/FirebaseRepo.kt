@@ -135,14 +135,8 @@ class FirebaseRepo {
 
     }
 
-    fun loadUserInfo(
-        profileId: String?,
-        img: CircleImageView?,
-        userImage: String?,
-        fullname: TextView?,
-        username: TextView?,
-        bio: TextView?,
-        c: Context?
+    fun loadUserInfo(profileId: String?, img: CircleImageView?, fullname: TextView?,
+        username: TextView?, bio: TextView?, c: Context?
     ) {
 
         val _userRef = userRef.child(profileId!!)
@@ -155,15 +149,8 @@ class FirebaseRepo {
                     val user = ds.getValue(User::class.java)!!
 
                     if (c != null) {
-
                         main.glideLoad(c, user.image, img!!)
                     }
-
-
-                    if (userImage != null) {
-                        user.image = userImage
-                    }
-
                     username?.text = user.username
                     fullname?.text = user.fullname
                     bio?.text = user.bio
@@ -327,6 +314,113 @@ class FirebaseRepo {
                 }
             }
         })
+    }
+
+    fun saves(savedPostList: MutableLiveData<MutableList<Post>>) {
+        val mySavedIdList = mutableListOf<String>()
+
+        val savesRef = ref.child("Saves").child(mAuth.currentUser!!.uid)
+
+        savesRef.addValueEventListener(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists()){
+                    for (sp in p0.children){
+                        (mySavedIdList).add(sp.key!!)
+                    }
+                    getsaves()
+                }
+            }
+
+            private fun getsaves() {
+
+                val mPostList = mutableListOf<Post>()
+
+                postsRef.addValueEventListener(object : ValueEventListener{
+                    override fun onCancelled(p0: DatabaseError) {}
+
+                    override fun onDataChange(p0: DataSnapshot) {
+                        if (p0.exists()){
+                            mPostList.clear()
+                            for (sp in p0.children){
+                                val post = sp.getValue(Post::class.java)
+
+                                for (id in mySavedIdList){
+
+                                    if(post!!.postId == id){
+
+                                        mPostList.add(post)
+                                    }
+                                }
+                            }
+                        }
+                        savedPostList.value = mPostList
+                    }
+                })
+
+            }
+        })
+
+    }
+
+    fun numberOfLikes(likes: TextView, postId: String) {
+
+        val likesRef = FirebaseDatabase.getInstance().reference.child("Likes").child(postId)
+
+        likesRef.addValueEventListener(object : ValueEventListener {
+
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists()) {
+                    likes.text = p0.childrenCount.toString() + " likes"
+                }
+            }
+        })
+    }
+
+    fun numberOfComments(comments: TextView, postId: String) {
+
+        val commentsRef = FirebaseDatabase.getInstance().reference.child("Comments").child(postId)
+
+        commentsRef.addValueEventListener(object : ValueEventListener {
+
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists()) {
+                    comments.text = p0.childrenCount.toString() + " comments"
+                }
+            }
+        })
+    }
+
+    fun save(saveBtn: ImageView, postId: String) {
+
+        if (saveBtn.tag == "Unsaved") {
+
+            FirebaseDatabase.getInstance().reference.child("Saves")
+                .child(mAuth.currentUser!!.uid).child(postId).setValue(true)
+
+        } else {
+            FirebaseDatabase.getInstance().reference.child("Saves")
+                .child(mAuth.currentUser!!.uid).child(postId).removeValue()
+
+
+        }
+    }
+
+    fun like(likeBtn: ImageView, postId: String, publisher: String) {
+
+        if (likeBtn.tag == "Like") {
+            FirebaseDatabase.getInstance().reference.child("Likes").child(postId)
+                .child(mAuth.currentUser!!.uid).setValue(true)
+        } else {
+            FirebaseDatabase.getInstance().reference.child("Likes").child(postId)
+                .child(mAuth.currentUser!!.uid).removeValue()
+
+        }
+
+        addNotificationLike(publisher, postId)
+
     }
 
     fun getTotalPosts(profileId: String, total_posts: TextView) {
@@ -581,7 +675,7 @@ class FirebaseRepo {
         })
     }
 
-    fun retrieveUsers(_text: TextView?, users: MutableList<User>?, userAdapter: UserAdapter?) {
+    fun getUsers(_text: TextView?, users: MutableList<User>?, userAdapter: UserAdapter?) {
 
         val userRef = ref.child("Users")
 

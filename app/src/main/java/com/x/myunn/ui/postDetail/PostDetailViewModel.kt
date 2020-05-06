@@ -38,10 +38,10 @@ class PostDetailViewModel(c: Context, safeArgs : PostDetailFragmentArgs) : ViewM
         postDescription.text = post.postDescription
         postTime.text = post.PostTime
 
-        postAdapter.publisherInfo(img, userName, post.publisher, c)
+        firebaseRepo.loadUserInfo(post.publisher, img, null, userName, null, c)
         firebaseRepo.isLike(post.postId, likeBtn)
-        postAdapter.numberOfLikes(likeTextView, post.postId)
-        postAdapter.numberOfComments(commentsTextView, post.postId)
+        firebaseRepo.numberOfLikes(likeTextView, post.postId)
+        firebaseRepo.numberOfComments(commentsTextView, post.postId)
         firebaseRepo.checkSavedStatus(post.postId, saveBtn)
 
     }
@@ -50,7 +50,7 @@ class PostDetailViewModel(c: Context, safeArgs : PostDetailFragmentArgs) : ViewM
     fun loadCurrentUserImage(img: CircleImageView, c: Context){
 
         firebaseRepo.loadUserInfo(
-            firebaseUser.uid, img, null, null,
+            firebaseUser.uid, img, null,
             null, null, c
         )
     }
@@ -79,11 +79,11 @@ class PostDetailViewModel(c: Context, safeArgs : PostDetailFragmentArgs) : ViewM
 
 
     fun like(likeBtn: ImageView) {
-        postAdapter.like(likeBtn, postId, publisher)
+        firebaseRepo.like(likeBtn, postId, publisher)
     }
 
     fun save(saveBtn: ImageView) {
-        postAdapter.save(saveBtn, postId)
+        firebaseRepo.save(saveBtn, postId)
     }
 
 }

@@ -39,7 +39,6 @@ class SignInFragment : Fragment() {
     }
 
     private fun loginUser() {
-        //val firebaseRepo = FirebaseRepo()
 
         val email = requireView().signin_email.text.toString()
         val password = requireView().signin_password.text.toString()

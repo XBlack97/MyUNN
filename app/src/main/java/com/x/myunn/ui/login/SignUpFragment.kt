@@ -21,8 +21,6 @@ class SignUpFragment : Fragment() {
     lateinit var password: String
     lateinit var password2: String
 
-    //val firebaseRepo = FirebaseRepo()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

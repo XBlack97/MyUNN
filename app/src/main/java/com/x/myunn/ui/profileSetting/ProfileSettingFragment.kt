@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -45,7 +46,19 @@ class ProfileSettingFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_profile_setting, container, false)
 
         val bnv = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
-        bnv.visibility = View.GONE
+        //bnv.visibility = View.GONE
+
+        val navController = Navigation.findNavController(
+            requireActivity(),
+            R.id.nav_host_fragment
+        )// this maybe change
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            if(destination.id == R.id.nav_profilesetting) {
+                bnv.visibility = View.GONE
+            } else {
+                bnv.visibility = View.VISIBLE
+            }
+        }
 
         view.logout_btn.setOnClickListener {
             mAuth.signOut()

@@ -12,7 +12,7 @@ class SearchViewModel : ViewModel() {
 
     fun retrieveUsers(_text: TextView?, users: MutableList<User>?, userAdapter: UserAdapter?) {
 
-        firebaseRepo.retrieveUsers(_text, users, userAdapter)
+        firebaseRepo.getUsers(_text, users, userAdapter)
 
     }
 

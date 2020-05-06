@@ -20,14 +20,13 @@ class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
 
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
 
-    lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
-    lateinit var postAdapter: PostAdapter
+    private lateinit var postAdapter: PostAdapter
 
-
-    val viewModelFactory = HomeViewModelFactory()
+    private val viewModelFactory = HomeViewModelFactory()
 
 
     override fun onCreateView(
@@ -44,10 +43,6 @@ class HomeFragment : Fragment() {
 //
 //        val dataSource = cwDatabase.getInstance(application).DatabaseDao
 
-        homeViewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
-
-
-
 
         recyclerView = view.findViewById(R.id.post_recycler_view)
         recyclerView.setHasFixedSize(true)
@@ -57,18 +52,28 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = linearLayoutManager
 
 
+        swipeRefresh = view.findViewById(R.id.swiperefresh)
+
+
+        return view
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        homeViewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
+
+
         // Observe the model
         homeViewModel.postList.observe(this.viewLifecycleOwner, Observer { posts ->
             // Data bind the recycler view
 
-            postAdapter = PostAdapter(requireContext(), posts, false)
+            postAdapter = PostAdapter(requireContext(), posts, 1)
             recyclerView.adapter = postAdapter
             postAdapter.notifyDataSetChanged()
 
             homeViewModel.myRef.keepSynced(true)
         })
-
-        swipeRefresh = view.findViewById(R.id.swiperefresh)
 
         swipeRefresh.setOnRefreshListener {
             //homeViewModel.refresh(view!!)
@@ -80,7 +85,6 @@ class HomeFragment : Fragment() {
             swipeRefresh.isRefreshing = false
         }
 
-        return view
     }
 
 

@@ -31,7 +31,7 @@ class UserAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(c).inflate(R.layout.user_item_list_view, parent, false)
+        val view = LayoutInflater.from(c).inflate(R.layout.item_layout_user, parent, false)
 
 
         return ViewHolder(view)

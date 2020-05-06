@@ -3,13 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginLeft="5dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginRight="5dp"
+    android:layout_marginTop="5dp"
     android:orientation="vertical"
     app:cardCornerRadius="8dp"
     app:cardElevation="5dp"
-
+    android:background="@color/white"
     >
 
     <de.hdodenhof.circleimageview.CircleImageView

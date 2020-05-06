@@ -2,24 +2,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/primaryColor">
+    android:background="@color/primaryColor"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/app_bar_layout_star"
-        >
+        android:background="@color/colorPrimary">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/notifications_toolbar"
+            android:id="@+id/star_toolbar"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="4dp"
             android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-
-            >
+            android:layout_marginRight="6dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -28,7 +26,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Notifications"
+                    android:text="Starred post"
                     android:textSize="18sp"
                     android:maxLines="1"
                     android:textStyle="bold"
@@ -36,8 +34,6 @@
                     android:layout_centerVertical="true"
 
                     />
-
-
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 
@@ -45,16 +41,15 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_notifications"
+        android:id="@+id/recycler_view_star"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/app_bar_layout_star"
-        android:padding="5dp"
         android:background="@color/primaryColor"
-        tools:listitem="@layout/item_layout_notifications"
+        tools:listitem="@layout/item_layout_post"
+        android:paddingBottom="5dp"
 
         >
-
     </androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>

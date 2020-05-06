@@ -24,7 +24,7 @@ class NotificationAdapter(
     //var navController = Navigation.findNavController((c as FragmentActivity), R.id.nav_host_fragment)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(c).inflate(R.layout.notification_item_layout, parent, false)
+        val view = LayoutInflater.from(c).inflate(R.layout.item_layout_notifications, parent, false)
 
         return ViewHolder(view)
     }
@@ -48,11 +48,7 @@ class NotificationAdapter(
         }
 
 
-        firebaseRepo.loadUserInfo(
-            notification.userId,
-            holder.profileImage,
-            null,
-            null,
+        firebaseRepo.loadUserInfo(notification.userId, holder.profileImage, null,
             holder.userName,
             null,
             c

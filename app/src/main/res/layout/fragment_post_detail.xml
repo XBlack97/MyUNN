@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
 
     <androidx.core.widget.NestedScrollView
@@ -129,28 +132,17 @@
 
             </androidx.cardview.widget.CardView>
 
-
-            <androidx.cardview.widget.CardView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="5dp"
-                android:orientation="vertical"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="5dp">
+                android:background="@color/primaryColor"
+                tools:listitem="@layout/item_layout_comment"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="3dp"
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view_comments"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-
-                    />
-
-
-            </androidx.cardview.widget.CardView>
+                />
 
 
 

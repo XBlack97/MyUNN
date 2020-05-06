@@ -1,6 +1,7 @@
 package com.x.myunn.ui.postDetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,6 +39,72 @@ class PostDetailFragment : Fragment() {
     private lateinit var viewModel: PostDetailViewModel
     lateinit var viewModelFactory: PostDetialViewModelFactory
 
+    lateinit var bnv: BottomNavigationView
+
+    val TAG = "TAG"
+
+
+    /**
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "PDF: onCreate")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "PDF: onStart")
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d(TAG, "------------------")
+        Log.d(TAG, "PDF: onAttach")
+        bvn = requireActivity().findViewById(R.id.nav_view)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "PDF: onPause")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "PDF: onResume")
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        Log.d(TAG, "PDF: onViewStateRestored")
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "PDF: onViewCreated")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "PDF: onDestroyView")
+
+        bvn.visibility = View.VISIBLE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "PDF: onDestroy")
+        bvn.visibility = View.VISIBLE
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d(TAG, "PDF: onDetach")
+        Log.d(TAG, "------------------")
+        bvn.visibility = View.VISIBLE
+    }
+
+     */
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,11 +112,23 @@ class PostDetailFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_post_detail, container, false)
 
-        val bvn = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
-        bvn.visibility = View.GONE
+        bnv = requireActivity().findViewById(R.id.nav_view)
+
+        val navController = findNavController(requireActivity(),R.id.nav_host_fragment)// this maybe change
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if(destination.id == R.id.postDetailFragment) {
+                bnv.visibility = View.GONE
+            } else {
+                bnv.visibility = View.VISIBLE
+            }
+        }
+
+        Log.d(TAG, "PDF: onCreateView")
+
+        //bvn.visibility = View.GONE
 
 
-        val safeArgs : PostDetailFragmentArgs by navArgs()
+        val safeArgs: PostDetailFragmentArgs by navArgs()
         publisher = safeArgs.publisherId
         postId = safeArgs.postId
 
@@ -68,15 +148,25 @@ class PostDetailFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        Log.d(TAG, "PDF: onActivityCreated")
+
         viewModel = ViewModelProvider(this, viewModelFactory).get(PostDetailViewModel::class.java)
 
 
-        viewModel.post.observe(this.viewLifecycleOwner, Observer{
+        viewModel.post.observe(this.viewLifecycleOwner, Observer {
 
-            viewModel.loadPost(it, requireView().postdetail_user_profile_image, requireView().postdetail_user_name,
-                requireView().postdetail_description, requireView().postdetail_time, requireView().postdetail_like_btn,
-                requireView().postdetail_like_text, requireView().postdetail_comment_text,
-                requireView().postdetail_save_btn, requireContext()
+            viewModel.loadPost(
+                it,
+                requireView().postdetail_user_profile_image,
+                requireView().postdetail_user_name,
+                requireView().postdetail_description,
+                requireView().postdetail_time,
+                requireView().postdetail_like_btn,
+                requireView().postdetail_like_text,
+                requireView().postdetail_comment_text,
+                requireView().postdetail_save_btn,
+                requireContext()
             )
         })
 
