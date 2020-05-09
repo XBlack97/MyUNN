@@ -328,11 +328,11 @@ class FirebaseRepo {
                     for (sp in p0.children){
                         (mySavedIdList).add(sp.key!!)
                     }
-                    getsaves()
+                    getSaves()
                 }
             }
 
-            private fun getsaves() {
+            private fun getSaves() {
 
                 val mPostList = mutableListOf<Post>()
 
