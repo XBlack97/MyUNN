@@ -12,7 +12,6 @@ import com.x.myunn.R
 import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.Notification
 import com.x.myunn.ui.notifications.NotificationsFragmentDirections
-import de.hdodenhof.circleimageview.CircleImageView
 
 class NotificationAdapter(
     private var c: Context,
@@ -92,7 +91,7 @@ class NotificationAdapter(
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
         var postImage = v.findViewById<ImageView>(R.id.post_image_notification)
-        var profileImage = v.findViewById<CircleImageView>(R.id.profile_image_notification)
+        var profileImage = v.findViewById<ImageView>(R.id.profile_image_notification)
         var userName = v.findViewById<TextView>(R.id.username_notification)
         var n_text = v.findViewById<TextView>(R.id.comment_notification)
 

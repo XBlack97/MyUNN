@@ -47,9 +47,14 @@
                     android:layout_toEndOf="@+id/search_fragment_icon"
                     android:cursorVisible="true"
                     android:hint="Search..."
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColorHighlight="@color/dark_gray"
+                    android:textCursorDrawable="@drawable/search_cursor"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
-                    android:textCursorDrawable="@color/white"
+                    android:theme="@style/SearchEditText"
                     android:textSize="17sp"
 
 

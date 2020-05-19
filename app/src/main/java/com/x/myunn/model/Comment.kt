@@ -2,5 +2,6 @@ package com.x.myunn.model
 
 data class Comment(
     var comment: String = "",
-    var publisher: String = ""
+    var publisher: String = "",
+    var time: String = ""
 )

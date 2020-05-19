@@ -1,11 +1,11 @@
-package com.x.myunn.ui.saves
+package com.x.myunn.ui.starredPost
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.Post
 
-class SavesViewModel : ViewModel() {
+class StarredPostViewModel : ViewModel() {
 
     val firebaseRepo = FirebaseRepo()
 

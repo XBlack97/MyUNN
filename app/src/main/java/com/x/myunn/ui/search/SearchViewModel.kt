@@ -1,6 +1,5 @@
 package com.x.myunn.ui.search
 
-import android.widget.TextView
 import androidx.lifecycle.ViewModel
 import com.x.myunn.adapter.UserAdapter
 import com.x.myunn.firebase.FirebaseRepo
@@ -10,11 +9,11 @@ class SearchViewModel : ViewModel() {
 
     val firebaseRepo = FirebaseRepo()
 
-    fun retrieveUsers(_text: TextView?, users: MutableList<User>?, userAdapter: UserAdapter?) {
-
-        firebaseRepo.getUsers(_text, users, userAdapter)
-
-    }
+//    fun retrieveUsers(_text: TextView?, users: MutableList<User>?, userAdapter: UserAdapter?) {
+//
+//        firebaseRepo.getUsers(_text, users, userAdapter)
+//
+//    }
 
     fun searchUser(s: String, users: MutableList<User>, userAdapter: UserAdapter?) {
 

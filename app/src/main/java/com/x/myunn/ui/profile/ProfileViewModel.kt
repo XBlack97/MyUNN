@@ -2,13 +2,13 @@ package com.x.myunn.ui.profile
 
 import android.content.Context
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.Post
-import de.hdodenhof.circleimageview.CircleImageView
 
 class ProfileViewModel(c: Context, safeArgs : ProfileFragmentArgs) : ViewModel() {
 
@@ -42,7 +42,7 @@ class ProfileViewModel(c: Context, safeArgs : ProfileFragmentArgs) : ViewModel()
 
     fun loadUserInfo(
         profileId: String,
-        profile_image_view_setting: CircleImageView,
+        profile_image_view_setting: ImageView,
         full_name_profile_setting: TextView,
         username_profile_setting: TextView,
         bio_profile_setting: TextView,

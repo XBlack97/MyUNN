@@ -1,11 +1,17 @@
 package com.x.myunn.ui.search
 
+import android.app.Activity
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +20,9 @@ import com.x.myunn.R
 import com.x.myunn.adapter.UserAdapter
 import com.x.myunn.model.User
 import kotlinx.android.synthetic.main.fragment_search.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+
 
 class SearchFragment : Fragment() {
 
@@ -26,6 +35,8 @@ class SearchFragment : Fragment() {
     private var recyclerView: RecyclerView? = null
     private var userAdapter: UserAdapter? = null
     private var mUser = mutableListOf<User>()
+
+    private val uiScope = CoroutineScope(Dispatchers.Default)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,11 +72,37 @@ class SearchFragment : Fragment() {
                 } else {
                     recyclerView?.visibility = View.VISIBLE
 
-                    viewModel.retrieveUsers(view!!.search_text_search_frag, mUser, userAdapter)
-                    viewModel.searchUser(s.toString(), mUser, userAdapter)
+                    //viewModel.retrieveUsers(view!!.search_text_search_frag, mUser, userAdapter)
+                    viewModel.searchUser(s.toString().toLowerCase(), mUser, userAdapter)
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        requireView().search_text_search_frag.showKeyboard()
+
+        requireView().search_text_search_frag.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                hideKeyboardFrom(requireContext(), requireView())
+            }
+        }
+    }
+
+    fun EditText.showKeyboard() {
+        if (requestFocus()) {
+            (activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+                .showSoftInput(this, SHOW_IMPLICIT)
+            setSelection(text.length)
+        }
+    }
+
+    fun hideKeyboardFrom(context: Context, view: View) {
+        val imm =
+            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 }

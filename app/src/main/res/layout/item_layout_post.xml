@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/post_user_profile_image"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -39,8 +39,8 @@
                     android:id="@+id/post_user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
                     android:text="user name"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="16sp"
@@ -50,11 +50,11 @@
                     android:id="@+id/post_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="2dp"
                     android:text="time"
                     android:textColor="@android:color/secondary_text_light"
-                    android:textSize="16sp"
+                    android:textSize="13sp"
                     android:textStyle="italic" />
             </LinearLayout>
 
@@ -67,13 +67,14 @@
             android:layout_marginStart="6dp"
             android:layout_marginTop="14dp"
             android:maxWidth="300dp"
+            android:textColorHighlight="@color/dark_gray"
             android:text="Post here..."
             android:textColor="@color/black"
             android:textSize="16sp" />
 
         <include
             android:id="@+id/countersContainer"
-            layout="@layout/post_counters_panel"
+            layout="@layout/layout_post_counters_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

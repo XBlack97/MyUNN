@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:layout_marginBottom="?attr/actionBarSize">
+    android:layout_marginBottom="?attr/actionBarSize"
+    android:background="@color/colorPrimary">
 
 
     <androidx.cardview.widget.CardView
@@ -27,22 +27,23 @@
             <EditText
                 android:id="@+id/post_text"
                 android:layout_width="wrap_content"
-                android:maxWidth="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="70dp"
                 android:layout_marginBottom="8dp"
-                android:textColorHint="@color/dark_gray"
                 android:background="@null"
                 android:hint="@string/upload_hint"
+                android:maxWidth="300dp"
+                android:padding="5dp"
+                android:textColorHighlight="@color/dark_gray"
+                android:textColorHint="@color/dark_gray"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.024"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.025"
-                android:padding="5dp" />
+                app:layout_constraintVertical_bias="0.025" />
 
             <ImageButton
                 android:id="@+id/camera"
@@ -61,21 +62,30 @@
                 app:layout_constraintVertical_bias="0.012" />
 
 
-            <ImageButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/upload_post"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="10dp"
-
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/ic_menu_send"
+                android:backgroundTint="#FFFFFF"
+                android:elevation="0dp"
+                android:src="@drawable/ic_menu_send"
+                app:backgroundTint="#00FFFFFF"
+                app:elevation="0dp"
+
 
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.976"
+                app:layout_constraintHorizontal_bias="0.895"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.963" />
+                app:layout_constraintVertical_bias="0.961"
+                app:maxImageSize="45dp"
+                app:fabSize="normal"
+                app:rippleColor="@color/dark_gray"
+
+                />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

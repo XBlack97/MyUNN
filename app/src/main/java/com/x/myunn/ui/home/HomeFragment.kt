@@ -80,7 +80,6 @@ class HomeFragment : Fragment() {
 
             Toast.makeText(context, " Adapter size: ${postAdapter.itemCount}", Toast.LENGTH_LONG)
                 .show()
-            println("list: ")
 
             swipeRefresh.isRefreshing = false
         }

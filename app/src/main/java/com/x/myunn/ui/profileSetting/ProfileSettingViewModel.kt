@@ -2,10 +2,10 @@ package com.x.myunn.ui.profileSetting
 
 import android.content.Context
 import android.net.Uri
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModel
 import com.x.myunn.firebase.FirebaseRepo
-import de.hdodenhof.circleimageview.CircleImageView
 
 class ProfileSettingViewModel : ViewModel() {
 
@@ -13,7 +13,7 @@ class ProfileSettingViewModel : ViewModel() {
 
     fun loadUserInfo(
         profileId: String,
-        profile_image_view_setting: CircleImageView,
+        profile_image_view_setting: ImageView,
         full_name_profile_setting: TextView,
         username_profile_setting: TextView,
         bio_profile_setting: TextView,

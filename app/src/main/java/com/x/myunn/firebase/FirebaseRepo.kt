@@ -22,7 +22,6 @@ import com.x.myunn.model.Comment
 import com.x.myunn.model.Notification
 import com.x.myunn.model.Post
 import com.x.myunn.model.User
-import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -37,6 +36,13 @@ class FirebaseRepo {
 
     val storageProfilePicRef = FirebaseStorage.getInstance().reference
         .child("Profile Pictures")
+
+    val now = SimpleDateFormat(
+        "h:mm a, MMM d`yy ",
+        Locale.getDefault()
+    ).format(Calendar.getInstance().time)
+
+    var currentUserImageUrl = ""
 
     init {
         FirebaseHandler()
@@ -61,7 +67,7 @@ class FirebaseRepo {
                 if (it.isSuccessful) {
                     saveUsernameInfo(fullname, username, email, pd, c)
                 } else {
-                    val errorMsg = it.exception!!.toString()
+                    val errorMsg = it.exception!!.message.toString()
                     Toast.makeText(c, "Error: $errorMsg", Toast.LENGTH_LONG).show()
                     mAuth.signOut()
                     pd.dismiss()
@@ -80,6 +86,7 @@ class FirebaseRepo {
         userMap["uid"] = mAuth.currentUser!!.uid
         userMap["fullname"] = fullname
         userMap["username"] = username
+        userMap["searchTag"] = username.toLowerCase()
         userMap["email"] = email
         userMap["bio"] = ""
         userMap["image"] = "https://firebasestorage.googleapis.com/v0/b/myunn-74e19.appspot." +
@@ -135,7 +142,8 @@ class FirebaseRepo {
 
     }
 
-    fun loadUserInfo(profileId: String?, img: CircleImageView?, fullname: TextView?,
+    fun loadUserInfo(
+        profileId: String?, img: ImageView?, fullname: TextView?,
         username: TextView?, bio: TextView?, c: Context?
     ) {
 
@@ -154,6 +162,8 @@ class FirebaseRepo {
                     username?.text = user.username
                     fullname?.text = user.fullname
                     bio?.text = user.bio
+
+                    currentUserImageUrl = user.image
 
                 }
 
@@ -256,9 +266,6 @@ class FirebaseRepo {
 
     fun uploadPost(postDescription: String) {
 
-        val sdf = SimpleDateFormat("HH:mm, MMM d, yyyy ", Locale.US)
-        val now = sdf.format(Calendar.getInstance().time)
-
         val postId = postsRef.push().key
 
         val postMap = HashMap<String, Any>()
@@ -325,6 +332,7 @@ class FirebaseRepo {
             override fun onCancelled(p0: DatabaseError) {}
             override fun onDataChange(p0: DataSnapshot) {
                 if (p0.exists()){
+                    mySavedIdList.clear()
                     for (sp in p0.children){
                         (mySavedIdList).add(sp.key!!)
                     }
@@ -403,7 +411,6 @@ class FirebaseRepo {
         } else {
             FirebaseDatabase.getInstance().reference.child("Saves")
                 .child(mAuth.currentUser!!.uid).child(postId).removeValue()
-
 
         }
     }
@@ -579,6 +586,7 @@ class FirebaseRepo {
         val commentsMap = HashMap<String, Any>()
         commentsMap["comment"] = add_comment.text.toString()
         commentsMap["publisher"] = mAuth.currentUser!!.uid
+        commentsMap["time"] = now
 
         commentsRef.push().setValue(commentsMap)
 
@@ -700,7 +708,7 @@ class FirebaseRepo {
 
     fun searchUser(s: String, users: MutableList<User>, userAdapter: UserAdapter?) {
 
-        val query = userRef.orderByChild("fullname").startAt(s).endAt(s + "\uf8ff")
+        val query = userRef.orderByChild("searchTag").startAt(s).endAt(s + "\uf8ff")
 
         query.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}

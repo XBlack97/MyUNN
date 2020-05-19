@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +20,6 @@ import com.x.myunn.model.Comment
 import com.x.myunn.model.User
 import com.x.myunn.ui.postDetail.PostDetailFragmentDirections
 
-import de.hdodenhof.circleimageview.CircleImageView
 
 class CommentsAdapter(private val c: Context, private val commentList: MutableList<Comment>?) :
     RecyclerView.Adapter<CommentsAdapter.Viewholder>() {
@@ -46,6 +46,7 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
         val comment = commentList!![position]
 
         holder.comment.text = comment.comment
+        holder.commentTime.text = comment.time
 
         getUserInfo(holder.imageProfile, holder.userName, comment.publisher)
 
@@ -57,7 +58,7 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
 
     }
 
-    private fun getUserInfo(imageProfile: CircleImageView, userName: TextView, publisher: String) {
+    private fun getUserInfo(imageProfile: ImageView, userName: TextView, publisher: String) {
 
         val userRef = FirebaseDatabase.getInstance().reference.child("Users")
             .child(publisher)
@@ -82,9 +83,10 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
 
     inner class Viewholder(v: View) : RecyclerView.ViewHolder(v) {
 
-        var imageProfile: CircleImageView = v.findViewById(R.id.user_profile_image_comment)
+        var imageProfile: ImageView = v.findViewById(R.id.user_profile_image_comment)
         var userName: TextView = v.findViewById(R.id.user_name_comment)
         var comment: TextView = v.findViewById(R.id.comment_text_comment)
+        var commentTime: TextView = v.findViewById(R.id.comment_time)
 
     }
 }

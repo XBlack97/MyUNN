@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,6 @@ import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.User
 import com.x.myunn.ui.search.SearchFragmentDirections
 import com.x.myunn.ui.showUsers.ShowUsersFragmentDirections
-import de.hdodenhof.circleimageview.CircleImageView
 
 class UserAdapter(
     private var c: Context,
@@ -32,7 +32,6 @@ class UserAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(c).inflate(R.layout.item_layout_user, parent, false)
-
 
         return ViewHolder(view)
     }
@@ -89,7 +88,7 @@ class UserAdapter(
 
         var username: TextView = v.findViewById(R.id.user_username)
         var fullname: TextView = v.findViewById(R.id.user_fullname)
-        var userImage: CircleImageView = v.findViewById(R.id.user_profileImage)
+        var userImage: ImageView = v.findViewById(R.id.user_profileImage)
         var follow_btn: Button = v.findViewById(R.id.user_followButton)
 
     }
