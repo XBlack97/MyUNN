@@ -37,16 +37,19 @@
 
     <fragment
         android:id="@+id/nav_starredPost"
-        android:name="com.x.myunn.ui.saves.SavesFragment"
+        android:name="com.x.myunn.ui.starredPost.StarredPostFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_saves" >
+        tools:layout="@layout/fragment_starred_post" >
         <action
             android:id="@+id/action_nav_starredPost_to_nav_profile"
             app:destination="@id/nav_profile"
-            app:enterAnim="@anim/slide_out_right"
-            app:exitAnim="@anim/slide_in_left"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:launchSingleTop="true"
             app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/fade_out" />
+            app:popExitAnim="@anim/fade_out"
+            app:popUpTo="@id/nav_profile"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_nav_starredPost_to_nav_showusers"
             app:destination="@id/nav_showusers"
@@ -165,29 +168,14 @@
             app:argType="string" />
         <action
             android:id="@+id/action_nav_showusers_to_nav_profile"
-            app:destination="@id/nav_profile"
-            app:enterAnim="@anim/fade_in"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/fade_out" />
+            app:destination="@id/nav_profile" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_profilesetting"
         android:name="com.x.myunn.ui.profileSetting.ProfileSettingFragment"
         android:label="Edit Profile"
-        tools:layout="@layout/fragment_profile_setting">
-        <action
-            android:id="@+id/action_nav_profilesetting_to_nav_profile"
-            app:destination="@id/nav_profile"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_right"
-            app:launchSingleTop="true"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/fade_out"
-            app:popUpTo="@id/nav_profile"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_profile_setting"/>
     <fragment
         android:id="@+id/postDetailFragment"
         android:name="com.x.myunn.ui.postDetail.PostDetailFragment"

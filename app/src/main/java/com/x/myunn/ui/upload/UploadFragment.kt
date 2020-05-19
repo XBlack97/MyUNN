@@ -15,7 +15,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.x.myunn.R
 import kotlinx.android.synthetic.main.fragment_upload.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 
@@ -83,11 +86,6 @@ class UploadFragment : Fragment() {
         snackbar.show()
 
 
-        uiScope.launch {
-            delay(TimeUnit.SECONDS.toMillis(2))
-            bnv?.visibility = View.VISIBLE
-        }
-
     }
 
     fun uploadFeed(v: View) {
@@ -95,7 +93,6 @@ class UploadFragment : Fragment() {
         val postDescription = requireView().post_text.text.toString()
 
         if (postDescription.isBlank()) {
-            bnv!!.visibility = View.GONE
             onSNACK(v, "Empty field !!")
 
         } else {

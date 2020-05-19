@@ -35,9 +35,10 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
             android:layout_gravity="bottom"
             app:menu="@menu/bottom_nav_menu"
+
+            app:layout_behavior=".activities.MainActivity$BottomNavigationBehavior"
 
             />
 
@@ -46,3 +47,6 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"-->

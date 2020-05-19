@@ -10,7 +10,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,8 +21,8 @@ import com.x.myunn.R
 import com.x.myunn.activities.LogInActivity
 import com.x.myunn.adapter.PostAdapter
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.profile_info.*
-import kotlinx.android.synthetic.main.profile_info.view.*
+import kotlinx.android.synthetic.main.layout_profile_info.*
+import kotlinx.android.synthetic.main.layout_profile_info.view.*
 
 class ProfileFragment : Fragment() {
 
@@ -62,17 +61,17 @@ class ProfileFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        bnv = requireActivity().findViewById(R.id.nav_view)
-
-        val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            if(destination.id == R.id.nav_profile) {
-                bnv.visibility = View.VISIBLE
-                Log.d(TAG, "Profile: bnv visible")
-            } else {
-                bnv.visibility = View.VISIBLE
-            }
-        }
+//        bnv = requireActivity().findViewById(R.id.nav_view)
+//
+//        val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+//        navController.addOnDestinationChangedListener { _, destination, _ ->
+//            if(destination.id == R.id.nav_profile) {
+//                bnv.visibility = View.VISIBLE
+//                Log.d(TAG, "Profile: bnv visible")
+//            } else {
+//                bnv.visibility = View.VISIBLE
+//            }
+//        }
 
 
         Log.d(TAG, "Profile: onCreateView")
@@ -152,6 +151,7 @@ class ProfileFragment : Fragment() {
 
         (activity as AppCompatActivity?)!!.setSupportActionBar(profile_toolbar)
 
+
         profile_toolbar.overflowIcon =
             AppCompatResources.getDrawable(requireContext(), R.drawable.ic_menu_white_24dp)
 
@@ -199,7 +199,6 @@ class ProfileFragment : Fragment() {
 
         Log.d(TAG, "Profile: onActivityCreated")
 
-        bnv.visibility = View.VISIBLE
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(ProfileViewModel::class.java)
 

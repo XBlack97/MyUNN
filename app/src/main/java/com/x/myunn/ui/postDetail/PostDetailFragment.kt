@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +18,7 @@ import com.x.myunn.R
 import com.x.myunn.adapter.CommentsAdapter
 import com.x.myunn.firebase.FirebaseRepo
 import kotlinx.android.synthetic.main.fragment_post_detail.view.*
-import kotlinx.android.synthetic.main.post_detail_counters_panel.view.*
+import kotlinx.android.synthetic.main.layout_post_detail_counters_panel.view.*
 
 class PostDetailFragment : Fragment() {
 
@@ -112,16 +111,16 @@ class PostDetailFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_post_detail, container, false)
 
-        bnv = requireActivity().findViewById(R.id.nav_view)
-
-        val navController = findNavController(requireActivity(),R.id.nav_host_fragment)// this maybe change
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            if(destination.id == R.id.postDetailFragment) {
-                bnv.visibility = View.GONE
-            } else {
-                bnv.visibility = View.VISIBLE
-            }
-        }
+//        bnv = requireActivity().findViewById(R.id.nav_view)
+//
+//        val navController = findNavController(requireActivity(),R.id.nav_host_fragment)// this maybe change
+//        navController.addOnDestinationChangedListener { _, destination, _ ->
+//            if(destination.id == R.id.postDetailFragment) {
+//                bnv.visibility = View.GONE
+//            } else {
+//                bnv.visibility = View.VISIBLE
+//            }
+//        }
 
         Log.d(TAG, "PDF: onCreateView")
 

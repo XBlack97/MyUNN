@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -56,13 +55,10 @@ class ShowUsersFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_show_users, container, false)
 
+        view.show_users_title.text = title
+        view.show_users_go_back.setOnClickListener { requireActivity().onBackPressed() }
 
-        view.show_user_toolbar_text.text = title
-
-        Toast.makeText(context, "ID: $id", Toast.LENGTH_LONG).show()
-
-
-        recyclerView = view.findViewById(R.id.show_user_recyclerview)
+        recyclerView = view.findViewById(R.id.show_users_recyclerview)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -82,7 +78,6 @@ class ShowUsersFragment : Fragment() {
             "Followers" -> viewModel.getFollowers()
             //"views" -> getViews()
 
-
         }
 
         viewModel.userLists.observe(viewLifecycleOwner, Observer {
@@ -94,6 +89,7 @@ class ShowUsersFragment : Fragment() {
             userAdapter.notifyDataSetChanged()
 
         })
+
     }
 
     /** private fun getViews() {

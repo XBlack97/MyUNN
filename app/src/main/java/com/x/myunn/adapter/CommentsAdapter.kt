@@ -46,6 +46,7 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
         val comment = commentList!![position]
 
         holder.comment.text = comment.comment
+        holder.commentTime.text = comment.time
 
         getUserInfo(holder.imageProfile, holder.userName, comment.publisher)
 
@@ -85,6 +86,7 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
         var imageProfile: CircleImageView = v.findViewById(R.id.user_profile_image_comment)
         var userName: TextView = v.findViewById(R.id.user_name_comment)
         var comment: TextView = v.findViewById(R.id.comment_text_comment)
+        var commentTime: TextView = v.findViewById(R.id.comment_time)
 
     }
 }

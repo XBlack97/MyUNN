@@ -38,6 +38,10 @@ class FirebaseRepo {
     val storageProfilePicRef = FirebaseStorage.getInstance().reference
         .child("Profile Pictures")
 
+    val now = SimpleDateFormat("h:mm a, MMM d, yyyy ", Locale.getDefault()).format(Calendar.getInstance().time)
+
+    var currentUserImageUrl = ""
+
     init {
         FirebaseHandler()
     }
@@ -155,6 +159,8 @@ class FirebaseRepo {
                     fullname?.text = user.fullname
                     bio?.text = user.bio
 
+                    currentUserImageUrl = user.image
+
                 }
 
             }
@@ -255,9 +261,6 @@ class FirebaseRepo {
     }
 
     fun uploadPost(postDescription: String) {
-
-        val sdf = SimpleDateFormat("HH:mm, MMM d, yyyy ", Locale.US)
-        val now = sdf.format(Calendar.getInstance().time)
 
         val postId = postsRef.push().key
 
@@ -579,6 +582,7 @@ class FirebaseRepo {
         val commentsMap = HashMap<String, Any>()
         commentsMap["comment"] = add_comment.text.toString()
         commentsMap["publisher"] = mAuth.currentUser!!.uid
+        commentsMap["time"] = now
 
         commentsRef.push().setValue(commentsMap)
 

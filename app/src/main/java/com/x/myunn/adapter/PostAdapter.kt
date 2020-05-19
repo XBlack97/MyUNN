@@ -14,7 +14,7 @@ import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.Post
 import com.x.myunn.ui.home.HomeFragmentDirections
 import com.x.myunn.ui.profile.ProfileFragmentDirections
-import com.x.myunn.ui.saves.SavesFragmentDirections
+import com.x.myunn.ui.starredPost.StarredPostFragmentDirections
 import de.hdodenhof.circleimageview.CircleImageView
 
 class PostAdapter(private val c: Context?,
@@ -127,7 +127,7 @@ class PostAdapter(private val c: Context?,
                     .actionNavProfileToNavShowusers("Likes", post.postId)
                 it.findNavController().navigate(action)
             }else{
-                val action = SavesFragmentDirections
+                val action = StarredPostFragmentDirections
                     .actionNavStarredPostToNavShowusers("Likes", post.postId)
                 it.findNavController().navigate(action)
             }
@@ -171,7 +171,7 @@ class PostAdapter(private val c: Context?,
 
     private fun starredToPostDetail(v: View, postId: String, publisher: String) {
 
-        val action = SavesFragmentDirections
+        val action = StarredPostFragmentDirections
             .actionNavStarredPostToPostDetailFragment(postId , publisher)
         v.findNavController().navigate(action)
 
@@ -187,7 +187,7 @@ class PostAdapter(private val c: Context?,
 
     private fun starredToProfile(v: View, publisher: String) {
 
-        val action = SavesFragmentDirections
+        val action = StarredPostFragmentDirections
             .actionNavStarredPostToNavProfile(publisher)
         v.findNavController().navigate(action)
 
