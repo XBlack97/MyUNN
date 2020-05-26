@@ -27,21 +27,15 @@ class ProfileSettingViewModel : ViewModel() {
 
     }
 
-    fun updateImageUserInfo(
+    fun updateUserInfo(
         fullname: String,
         username: String,
-        bio: String,
-        imageUri: Uri,
+        bio: String?,
+        imageUri: Uri?,
         c: Context
     ) {
 
-        firebaseRepo.updateImageUserInfo(fullname, username, bio, imageUri, c)
+        firebaseRepo.updateUserInfo(fullname, username, bio, imageUri, c)
 
     }
-
-    fun updateUserInfoOnly(fullname: String, username: String, bio: String, c: Context) {
-
-        firebaseRepo.updateUserInfoOnly(fullname, username, bio, c)
-    }
-
 }

@@ -29,8 +29,7 @@ class ProfileSettingFragment : Fragment() {
 
     val mAuth = FirebaseAuth.getInstance()
 
-    private var checker = ""
-    private lateinit var imageUri: Uri
+    private var imageUri: Uri? = null
 
 
 
@@ -42,21 +41,6 @@ class ProfileSettingFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_profile_setting, container, false)
 
-//        val bnv = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
-//        //bnv.visibility = View.GONE
-//
-//        val navController = Navigation.findNavController(
-//            requireActivity(),
-//            R.id.nav_host_fragment
-//        )// this maybe change
-//        navController.addOnDestinationChangedListener { controller, destination, arguments ->
-//            if(destination.id == R.id.nav_profilesetting) {
-//                bnv.visibility = View.GONE
-//            } else {
-//                bnv.visibility = View.VISIBLE
-//            }
-//        }
-
         view.logout_btn.setOnClickListener {
             mAuth.signOut()
 
@@ -66,11 +50,8 @@ class ProfileSettingFragment : Fragment() {
         }
 
         view.save_info_profile_btn.setOnClickListener {
-            if (checker == "clicked") {
-                updateImageUserInfo()
-            } else {
-                updateUserInfoOnly()
-            }
+
+            updateUserInfo()
         }
 
         view.close_profile_btn.setOnClickListener {
@@ -78,8 +59,6 @@ class ProfileSettingFragment : Fragment() {
         }
 
         view.change_image_text_btn.setOnClickListener {
-
-            checker = "clicked"
 
             CropImage.activity().setAspectRatio(1, 1)
                 .start(requireContext(), this)
@@ -117,7 +96,7 @@ class ProfileSettingFragment : Fragment() {
         }
     }
 
-    private fun updateImageUserInfo() {
+    private fun updateUserInfo() {
 
         when {
             full_name_profile_setting.text.toString() == "" -> Toast.makeText(
@@ -130,66 +109,23 @@ class ProfileSettingFragment : Fragment() {
                 "Username is required...",
                 Toast.LENGTH_LONG
             ).show()
-            bio_profile_setting.text.toString() == "" -> Toast.makeText(
-                context,
-                "Bio is empty...",
-                Toast.LENGTH_LONG
-            ).show()
-            imageUri == null -> Toast.makeText(context, "No image selected...", Toast.LENGTH_LONG)
-                .show()
+
 
             else -> {
                 val fullname = full_name_profile_setting.text.toString()
                 val username = username_profile_setting.text.toString()
-                val bio = bio_profile_setting.text.toString()
+                val bio: String? = bio_profile_setting.text.toString()
 
-                profileSettingViewModel.updateImageUserInfo(
+                profileSettingViewModel.updateUserInfo(
                     fullname,
                     username,
                     bio,
                     imageUri,
-                    this@ProfileSettingFragment.requireContext()
-                )
-
-            }
-        }
-    }
-
-    private fun updateUserInfoOnly() {
-
-        when {
-            full_name_profile_setting.text.toString() == "" -> Toast.makeText(
-                context,
-                "Full Name is required...",
-                Toast.LENGTH_LONG
-            ).show()
-            username_profile_setting.text.toString() == "" -> Toast.makeText(
-                context,
-                "Username is required...",
-                Toast.LENGTH_LONG
-            ).show()
-            bio_profile_setting.text.toString() == "" -> Toast.makeText(
-                context,
-                "Bio is empty...",
-                Toast.LENGTH_LONG
-            ).show()
-
-            else -> {
-
-                val fullname = full_name_profile_setting.text.toString()
-                val username = username_profile_setting.text.toString()
-                val bio = bio_profile_setting.text.toString()
-
-                profileSettingViewModel.updateUserInfoOnly(
-                    fullname,
-                    username,
-                    bio,
                     requireContext()
                 )
+
             }
         }
-
-
     }
 
 }

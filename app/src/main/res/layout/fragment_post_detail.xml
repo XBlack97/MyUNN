@@ -59,7 +59,7 @@
             android:orientation="vertical">
 
 
-            <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -222,12 +222,9 @@
             android:background="@drawable/ic_menu_send"
             android:backgroundTint="#FFFFFF"
             android:elevation="0dp"
-
             android:src="@drawable/ic_menu_send"
             app:backgroundTint="#00FFFFFF"
             app:elevation="0dp"
-
-
             app:fabSize="mini"
             app:rippleColor="@color/dark_gray" />
 

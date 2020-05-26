@@ -106,10 +106,8 @@
                     android:layout_marginRight="20dp"
                     android:hint="Full Name"
                     android:inputType="text"
-
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/change_image_text_btn" />
-
 
                 <EditText
                     android:id="@+id/username_profile_setting"
@@ -137,15 +135,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/username_profile_setting" />
 
-                <androidx.legacy.widget.Space
-                    android:layout_width="match_parent"
-                    android:layout_height="85dp"
-                    android:id="@+id/space"
-                    app:layout_constraintTop_toBottomOf="@id/bio_profile_setting"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    />
-
                 <Button
                     android:id="@+id/logout_btn"
                     android:layout_width="match_parent"
@@ -153,16 +142,16 @@
                     android:layout_below="@id/bio_profile_setting"
                     android:layout_marginStart="30dp"
                     android:layout_marginBottom="15dp"
+                    android:layout_marginTop="80dp"
                     android:layout_marginEnd="30dp"
                     android:background="@drawable/buttons_background_green_stroke"
                     android:text="Logout"
                     android:textAllCaps="false"
                     android:textColor="@color/colorPrimary"
-
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/delete_account_btn"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/space"
+                    app:layout_constraintTop_toBottomOf="@id/bio_profile_setting"
                     app:layout_constraintVertical_bias="0.868" />
 
                 <Button
@@ -178,14 +167,12 @@
                     android:text="Delete Account"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
-
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/logout_btn" />
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,10 +37,7 @@ class FirebaseRepo {
     val storageProfilePicRef = FirebaseStorage.getInstance().reference
         .child("Profile Pictures")
 
-    val now = SimpleDateFormat(
-        "h:mm a, MMM d`yy ",
-        Locale.getDefault()
-    ).format(Calendar.getInstance().time)
+    val now = SimpleDateFormat("h:mm a, MMM d`yy ", Locale.getDefault()).format(Calendar.getInstance().time)
 
     var currentUserImageUrl = ""
 
@@ -175,11 +172,11 @@ class FirebaseRepo {
     }
 
 
-    fun updateImageUserInfo(
+    fun updateUserInfo(
         fullname: String,
         username: String,
-        bio: String,
-        imageUri: Uri,
+        bio: String?,
+        imageUri: Uri?,
         c: Context
     ) {
 
@@ -190,36 +187,25 @@ class FirebaseRepo {
 
         val fileRef = storageProfilePicRef.child(mAuth.currentUser!!.uid + "jpg")
 
-        val uploadTask = fileRef.putFile(imageUri)
+        if (imageUri != null) {
 
-        uploadTask.continueWith { task ->
-            if (!task.isSuccessful) {
-                pd.dismiss()
-                task.exception?.let {
-                    throw it
+            val uploadTask = fileRef.putFile(imageUri)
+
+            uploadTask.continueWith { task ->
+                if (!task.isSuccessful) {
+                    pd.dismiss()
+                    task.exception?.let {
+                        throw it
+                    }
                 }
-            }
-            fileRef.downloadUrl
-        }
-            .addOnCompleteListener { task ->
+                fileRef.downloadUrl
+            }.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     task.result!!.addOnSuccessListener { it ->
                         println("Main: $it")
                         val myUri = it.toString()
 
-                        val userMap = HashMap<String, Any>()
-                        userMap["fullname"] = fullname
-                        userMap["username"] = username
-                        userMap["bio"] = bio
-                        userMap["image"] = myUri
-
-                        userRef.child(mAuth.currentUser!!.uid).updateChildren(userMap)
-
-                        Toast.makeText(
-                            c,
-                            "Account info updated succefully",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        userRef.child(mAuth.currentUser!!.uid).child("image").setValue(myUri)
 
                         pd.dismiss()
                     }
@@ -228,19 +214,20 @@ class FirebaseRepo {
                     pd.dismiss()
                 }
             }
-
-    }
-
-    fun updateUserInfoOnly(fullname: String, username: String, bio: String, c: Context) {
+        }
 
         val userMap = HashMap<String, Any>()
         userMap["fullname"] = fullname
         userMap["username"] = username
-        userMap["bio"] = bio
+        if (bio != null) userMap["bio"] = bio
 
         userRef.child(mAuth.currentUser!!.uid).updateChildren(userMap)
 
         Toast.makeText(c, "Account info updated succefully", Toast.LENGTH_LONG).show()
+
+        pd.dismiss()
+
+
     }
 
     fun retrievePosts(postList: MutableLiveData<MutableList<Post>>) {
