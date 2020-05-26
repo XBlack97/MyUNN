@@ -73,8 +73,7 @@
                 android:src="@drawable/ic_menu_send"
                 app:backgroundTint="#00FFFFFF"
                 app:elevation="0dp"
-
-
+                android:clickable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.895"
@@ -86,7 +85,6 @@
                 app:rippleColor="@color/dark_gray"
 
                 />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
