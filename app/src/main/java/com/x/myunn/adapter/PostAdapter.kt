@@ -18,9 +18,9 @@ import com.x.myunn.ui.starredPost.StarredPostFragmentDirections
 
 
 class PostAdapter(
-    private val c: Context?,
-    private var mPost: MutableList<Post>?,
-    private var page: Int?
+    private val c: Context,
+    private var mPost: MutableList<Post>,
+    private var page: Int
 ) :
     RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
@@ -36,13 +36,12 @@ class PostAdapter(
     }
 
     override fun getItemCount(): Int {
-
-        return mPost!!.size
+        return mPost.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val post = mPost!![position]
+        val post = mPost[position]
 
         holder.postDescription.text = post.postDescription
 
@@ -196,8 +195,6 @@ class PostAdapter(
         v.findNavController().navigate(action)
 
     }
-
-
 }
 
 

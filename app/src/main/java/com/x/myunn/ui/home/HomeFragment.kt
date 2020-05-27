@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.x.myunn.R
 import com.x.myunn.adapter.PostAdapter
+import com.x.myunn.ui.search.SearchFragment
 
 
 class HomeFragment : Fragment() {
@@ -28,16 +28,14 @@ class HomeFragment : Fragment() {
 
     private val viewModelFactory = HomeViewModelFactory()
 
+    private val searchFragment = SearchFragment.newInstance()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-
-        val bvn = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
-        bvn.visibility = View.VISIBLE
-
 
 //        val application = requireNotNull(this.activity).application
 //
@@ -84,6 +82,11 @@ class HomeFragment : Fragment() {
             swipeRefresh.isRefreshing = false
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        searchFragment.hideKeyboardFrom(requireContext(), requireView())
     }
 
 

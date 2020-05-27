@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +23,8 @@ class StarredPostFragment : Fragment() {
 
     private lateinit var starredPostViewModel: StarredPostViewModel
 
+    private val TAG = "TAG"
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,7 +39,6 @@ class StarredPostFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         val linearLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, true)
         linearLayoutManager.stackFromEnd = true
-
         recyclerView.layoutManager = linearLayoutManager
 
         view.starred_go_back.setOnClickListener { requireActivity().onBackPressed() }
@@ -57,6 +59,10 @@ class StarredPostFragment : Fragment() {
             postAdapter = PostAdapter(requireContext(), it, 3)
             recyclerView.adapter = postAdapter
             postAdapter.notifyDataSetChanged()
+
+            println("Content: $it")
+
+            Toast.makeText(requireContext(), "list: ${postAdapter.itemCount}", Toast.LENGTH_SHORT).show()
 
             checkEmpty()
         })

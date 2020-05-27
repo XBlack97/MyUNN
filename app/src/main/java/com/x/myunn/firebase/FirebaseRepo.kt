@@ -10,10 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.x.myunn.R
 import com.x.myunn.activities.MainActivity
@@ -312,6 +309,7 @@ class FirebaseRepo {
 
     fun saves(savedPostList: MutableLiveData<MutableList<Post>>) {
         val mySavedIdList = mutableListOf<String>()
+        val mPostList = mutableListOf<Post>()
 
         val savesRef = ref.child("Saves").child(mAuth.currentUser!!.uid)
 
@@ -321,7 +319,7 @@ class FirebaseRepo {
                 if (p0.exists()){
                     mySavedIdList.clear()
                     for (sp in p0.children){
-                        (mySavedIdList).add(sp.key!!)
+                        mySavedIdList.add(sp.key!!)
                     }
                     getSaves()
                 }
@@ -329,11 +327,8 @@ class FirebaseRepo {
 
             private fun getSaves() {
 
-                val mPostList = mutableListOf<Post>()
-
                 postsRef.addValueEventListener(object : ValueEventListener{
                     override fun onCancelled(p0: DatabaseError) {}
-
                     override fun onDataChange(p0: DataSnapshot) {
                         if (p0.exists()){
                             mPostList.clear()
@@ -356,6 +351,21 @@ class FirebaseRepo {
             }
         })
 
+        savesRef.addChildEventListener(object : ChildEventListener{
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {}
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+                mPostList.clear()
+                savedPostList.value = mPostList
+            }
+
+        })
     }
 
     fun numberOfLikes(likes: TextView, postId: String) {
@@ -707,7 +717,9 @@ class FirebaseRepo {
                     val user = snapshot.getValue(User::class.java)
 
                     if (user != null) {
-                        users.add(user)
+                        if (user.uid != mAuth.currentUser!!.uid) {
+                            users.add(user)
+                        }
                     }
                 }
 

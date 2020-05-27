@@ -37,7 +37,7 @@
         android:selectAllOnFocus="true"
         android:textColor="@color/colorPrimary"
         android:textColorHint="@color/dark_gray"
-        android:textColorLink="@color/colorPrimary"
+        android:textColorHighlight="@color/dark_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -56,6 +56,7 @@
         android:selectAllOnFocus="true"
         android:textColor="@color/colorPrimary"
         android:textColorHint="@color/dark_gray"
+        android:textColorHighlight="@color/dark_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signin_email" />
