@@ -6,27 +6,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.x.myunn.R
-import com.x.myunn.activities.MainActivity
 import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.Post
+import com.x.myunn.model.PostImage
 import com.x.myunn.ui.home.HomeFragmentDirections
 import com.x.myunn.ui.profile.ProfileFragmentDirections
 import com.x.myunn.ui.starredPost.StarredPostFragmentDirections
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class PostAdapter(
     private val c: Context,
     private var mPost: MutableList<Post>,
-    private var page: Int
+    private var postPage: Int //, private var mPostImages: MutableList<PostImage>
 ) :
     RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
     val firebaseRepo = FirebaseRepo()
 
-    val main = MainActivity.newInstance()
+    private val uiScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -47,19 +53,36 @@ class PostAdapter(
 
         holder.postTime.text = post.PostTime
 
+        if (post._isPostImages){
+            holder.postImages.visibility = View.GONE
+        }
+
+        holder.postImages.visibility = View.VISIBLE
+        getPostImages(post.postId).observe(c as AppCompatActivity, Observer {
+
+            uiScope.launch {
+
+                holder.postImages.adapter = PostImageAdapter(it, c,1)
+
+            }
+
+        })
+
+
+
+
+
         firebaseRepo.loadUserInfo(
-            post.publisher, holder.profileImage, null,
-            holder.userName, null, c
-        )
+            post.publisher, holder.profileImage, null, holder.userName, null, c)
         firebaseRepo.isLike(post.postId, holder.likeBtn)
         firebaseRepo.numberOfLikes(holder.likes, post.postId)
         firebaseRepo.numberOfComments(holder.comments, post.postId)
         firebaseRepo.checkSavedStatus(post.postId, holder.saveBtn)
 
         holder.postDescription.setOnClickListener {
-            if (page == 1) {
+            if (postPage == 1) {
                 homeToPostDetail(it, post.postId, post.publisher)
-            } else if (page == 2) {
+            } else if (postPage == 2) {
                 profileToPostDetail(it, post.postId, post.publisher)
             } else {
                 starredToPostDetail(it, post.postId, post.publisher)
@@ -67,9 +90,9 @@ class PostAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            if (page == 1) {
+            if (postPage == 1) {
                 homeToPostDetail(it, post.postId, post.publisher)
-            } else if (page == 2) {
+            } else if (postPage == 2) {
                 profileToPostDetail(it, post.postId, post.publisher)
             } else
                 starredToPostDetail(it, post.postId, post.publisher)
@@ -77,18 +100,18 @@ class PostAdapter(
 
         holder.profileImage.setOnClickListener {
 
-            if (page == 1) {
+            if (postPage == 1) {
                 homeToProfile(it, post.publisher)
-            } else if (page == 3) {
+            } else if (postPage == 3) {
                 starredToProfile(it, post.publisher)
             }
         }
 
         holder.userName.setOnClickListener {
 
-            if (page == 1) {
+            if (postPage == 1) {
                 homeToProfile(it, post.publisher)
-            } else if (page == 3) {
+            } else if (postPage == 3) {
                 starredToProfile(it, post.publisher)
             }
         }
@@ -99,17 +122,17 @@ class PostAdapter(
         }
 
         holder.commentBtn.setOnClickListener {
-            if (page == 1) {
+            if (postPage == 1) {
                 homeToPostDetail(it, post.postId, post.publisher)
-            } else if (page == 2) {
+            } else if (postPage == 2) {
                 profileToPostDetail(it, post.postId, post.publisher)
             } else starredToPostDetail(it, post.postId, post.publisher)
         }
 
         holder.comments.setOnClickListener {
-            if (page == 1) {
+            if (postPage == 1) {
                 homeToPostDetail(it, post.postId, post.publisher)
-            } else if (page == 2) {
+            } else if (postPage == 2) {
                 profileToPostDetail(it, post.postId, post.publisher)
             } else
                 starredToPostDetail(it, post.postId, post.publisher)
@@ -123,11 +146,11 @@ class PostAdapter(
 
         holder.likes.setOnClickListener {
 
-            if (page == 1) {
+            if (postPage == 1) {
                 val action = HomeFragmentDirections
                     .actionNavHomeToNavShowusers("Likes", post.postId)
                 it.findNavController().navigate(action)
-            } else if (page == 2) {
+            } else if (postPage == 2) {
                 val action = ProfileFragmentDirections
                     .actionNavProfileToNavShowusers("Likes", post.postId)
                 it.findNavController().navigate(action)
@@ -139,6 +162,14 @@ class PostAdapter(
 
         }
 
+
+    }
+
+
+    fun getPostImages(postId: String): MutableLiveData<MutableList<PostImage>> {
+        val l_postImages = MutableLiveData<MutableList<PostImage>>()
+        firebaseRepo.getPostImages(postId, l_postImages)
+        return l_postImages
     }
 
 
@@ -153,6 +184,8 @@ class PostAdapter(
         var likes: TextView = v.findViewById(R.id.post_like_text)
         var comments: TextView = v.findViewById(R.id.post_comment_text)
         var postDescription: TextView = v.findViewById(R.id.post_description)
+
+        var postImages: RecyclerView = v.findViewById(R.id.post_uploaded_post_images)
 
     }
 

@@ -75,6 +75,13 @@ class HomeViewModel : ViewModel() {
         return l_postList
     }
 
+//    fun getPostImages(): MutableLiveData<MutableList<PostImage>> {
+//        val l_postImages = MutableLiveData<MutableList<PostImage>>()
+//        firebaseRepo.getPostImages(postId, l_postImages)
+//        return l_postImages
+//    }
+
+
 //    fun clear() {
 //            uiScope.launch {
 //                withContext(Dispatchers.IO) {

@@ -20,7 +20,6 @@ class NotificationAdapter(
     RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
 
     val firebaseRepo = FirebaseRepo()
-    //var navController = Navigation.findNavController((c as FragmentActivity), R.id.nav_host_fragment)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(c).inflate(R.layout.item_layout_notifications, parent, false)
@@ -53,7 +52,7 @@ class NotificationAdapter(
             c
         )
 
-        if (notification.Post) {
+        if (notification._isPost) {
             holder.postImage.visibility = View.VISIBLE
             //getPostImage(holder.postImage, notification.postId)
         } else {
@@ -62,7 +61,7 @@ class NotificationAdapter(
 
         holder.itemView.setOnClickListener {
 
-            if (notification.Post) {
+            if (notification._isPost) {
 
                 val postId = notification.postId
                 val publisherId = notification.userId

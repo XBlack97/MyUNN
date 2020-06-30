@@ -4,5 +4,5 @@ data class Notification(
     var userId: String = "",
     var text: String = "",
     var postId: String = "",
-    var Post: Boolean = false
+    var _isPost: Boolean = false
 )

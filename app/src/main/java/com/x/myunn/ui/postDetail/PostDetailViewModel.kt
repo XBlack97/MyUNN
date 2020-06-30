@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.Comment
 import com.x.myunn.model.Post
+import com.x.myunn.model.PostImage
 
 class PostDetailViewModel(c: Context, safeArgs : PostDetailFragmentArgs) : ViewModel() {
 
@@ -17,13 +18,13 @@ class PostDetailViewModel(c: Context, safeArgs : PostDetailFragmentArgs) : ViewM
     val publisher = safeArgs.publisherId
     val postId = safeArgs.postId
 
-    lateinit var postUsername: String
-
     var firebaseUser = FirebaseAuth.getInstance().currentUser!!
 
     var commentList = loadComments()
 
     var post = loadPost_()
+
+    var _postImages = getPostImages()
 
 
 
@@ -44,6 +45,12 @@ class PostDetailViewModel(c: Context, safeArgs : PostDetailFragmentArgs) : ViewM
 
     }
 
+
+    fun getPostImages(): MutableLiveData<MutableList<PostImage>> {
+        val l_postImages = MutableLiveData<MutableList<PostImage>>()
+        firebaseRepo.getPostImages(postId, l_postImages)
+        return l_postImages
+    }
 
     fun loadCurrentUserImage(img: ImageView, c: Context) {
 

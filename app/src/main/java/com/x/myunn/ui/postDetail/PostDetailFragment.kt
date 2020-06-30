@@ -1,6 +1,7 @@
 package com.x.myunn.ui.postDetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.x.myunn.R
-import com.x.myunn.adapter.CommentsAdapter
+import com.x.myunn.adapter.CommentAdapter
+import com.x.myunn.adapter.PostImageAdapter
 import com.x.myunn.firebase.FirebaseRepo
 import kotlinx.android.synthetic.main.fragment_post_detail.view.*
 import kotlinx.android.synthetic.main.layout_post_detail_counters_panel.view.*
@@ -31,7 +33,7 @@ class PostDetailFragment : Fragment() {
 
     lateinit var recyclerViewComment: RecyclerView
 
-    lateinit var commentAdapter: CommentsAdapter
+    lateinit var commentAdapter: CommentAdapter
 
     private lateinit var viewModel: PostDetailViewModel
     lateinit var viewModelFactory: PostDetialViewModelFactory
@@ -62,6 +64,8 @@ class PostDetailFragment : Fragment() {
         linearLayout_c.stackFromEnd = true
         recyclerViewComment.layoutManager = linearLayout_c
 
+        view.postdetail_uploaded_post_images.setHasFixedSize(true)
+
 
         return view
     }
@@ -73,6 +77,10 @@ class PostDetailFragment : Fragment() {
 
 
         viewModel.post.observe(this.viewLifecycleOwner, Observer {
+
+//            if (it._isPostImages){
+//                requireView().postdetail_uploaded_post_images.visibility = View.GONE
+//            }else requireView().postdetail_uploaded_post_images.visibility = View.VISIBLE
 
             viewModel.loadPost(
                 it,
@@ -88,15 +96,35 @@ class PostDetailFragment : Fragment() {
             )
         })
 
+        viewModel._postImages.observe(this.viewLifecycleOwner, Observer {
+
+
+            Log.d("TAG-PD", "     PostDetialsImagesList: ${it}")
+
+            val adapter = PostImageAdapter(it, requireContext(), 1)
+
+            Log.d("TAG-PD", "     PD********")
+
+
+            requireView().postdetail_uploaded_post_images.adapter = adapter
+
+            Log.d("TAG-PD", "     PD-----------")
+
+        })
+
         viewModel.loadCurrentUserImage(requireView().profile_image_comment, requireContext())
 
         viewModel.commentList.observe(this.viewLifecycleOwner, Observer {
             // Data bind the recycler view
 
-            commentAdapter = CommentsAdapter(requireContext(), it)
+            commentAdapter = CommentAdapter(requireContext(), it)
 
             recyclerViewComment.adapter = commentAdapter
-            recyclerViewComment.scrollToPosition(it.size - 1)
+            //recyclerViewComment.scrollToPosition(it.size - 1)
+
+            //requireView().nsv.fullScroll(ScrollView.FOCUS_DOWN)
+
+            requireView().nsv.scrollTo(0, requireView().nsv.bottom)
 
         })
 

@@ -73,7 +73,7 @@ class SignUpFragment : Fragment() {
 
 
             else -> {
-                FirebaseRepo().CreateAccount(fullname, username, email, password, requireContext())
+                FirebaseRepo().createAccount(fullname, username, email, password, requireContext())
             }
 
         }

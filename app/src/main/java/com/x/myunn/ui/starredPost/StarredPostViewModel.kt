@@ -15,7 +15,7 @@ class StarredPostViewModel : ViewModel() {
 
         val l_savedPostList = MutableLiveData<MutableList<Post>>()
 
-        firebaseRepo.saves(l_savedPostList)
+        firebaseRepo.getStarredPost(l_savedPostList)
 
         return l_savedPostList
     }

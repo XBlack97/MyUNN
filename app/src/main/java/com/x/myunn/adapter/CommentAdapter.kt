@@ -19,10 +19,11 @@ import com.x.myunn.activities.MainActivity
 import com.x.myunn.model.Comment
 import com.x.myunn.model.User
 import com.x.myunn.ui.postDetail.PostDetailFragmentDirections
+import com.x.myunn.utils.glideLoad
 
 
-class CommentsAdapter(private val c: Context, private val commentList: MutableList<Comment>?) :
-    RecyclerView.Adapter<CommentsAdapter.Viewholder>() {
+class CommentAdapter(private val c: Context, private val commentList: MutableList<Comment>?) :
+    RecyclerView.Adapter<CommentAdapter.Viewholder>() {
 
     private var firebaseUser: FirebaseUser? = null
 
@@ -71,7 +72,7 @@ class CommentsAdapter(private val c: Context, private val commentList: MutableLi
 
                     userName.text = user!!.username
 
-                    main.glideLoad(c, user.image, imageProfile)
+                    glideLoad(c, user.image, imageProfile, false)
 
 
                 }

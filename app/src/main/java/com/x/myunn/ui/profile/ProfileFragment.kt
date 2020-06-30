@@ -14,12 +14,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.x.myunn.R
 import com.x.myunn.activities.LogInActivity
-import com.x.myunn.activities.MainActivity
 import com.x.myunn.adapter.PostAdapter
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.layout_profile_info.*
@@ -42,10 +40,6 @@ class ProfileFragment : Fragment() {
     lateinit var postAdapter: PostAdapter
 
     lateinit var viewModelFactory: ProfileViewModelFactory
-
-    lateinit var bnv: BottomNavigationView
-
-    private val main = MainActivity.newInstance()
 
     val TAG = "TAG"
 

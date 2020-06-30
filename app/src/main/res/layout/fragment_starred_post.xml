@@ -46,7 +46,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_star"
         android:layout_width="match_parent"
@@ -63,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="All caught up..."
+        android:text="No starred post..."
         android:textColor="@color/dark_gray"
         android:textSize="28sp"
         android:textStyle="italic"

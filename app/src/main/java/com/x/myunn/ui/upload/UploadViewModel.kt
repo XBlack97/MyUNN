@@ -24,9 +24,9 @@ class UploadViewModel : ViewModel() {
         _navigateBackHome.value = null
     }
 
-    fun uploadPost(postDescription: String) {
+    fun uploadPost(postDescription: String, imageList: ArrayList<String>?) {
 
-        firebaseRepo.uploadPost(postDescription)
+        firebaseRepo.uploadPost(postDescription, imageList)
     }
 
     override fun onCleared() {

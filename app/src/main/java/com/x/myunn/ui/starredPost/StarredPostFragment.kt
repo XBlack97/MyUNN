@@ -60,7 +60,6 @@ class StarredPostFragment : Fragment() {
             recyclerView.adapter = postAdapter
             postAdapter.notifyDataSetChanged()
 
-            println("Content: $it")
 
             Toast.makeText(requireContext(), "list: ${postAdapter.itemCount}", Toast.LENGTH_SHORT).show()
 

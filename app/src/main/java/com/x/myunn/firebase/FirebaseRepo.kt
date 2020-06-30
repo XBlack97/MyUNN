@@ -4,37 +4,38 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import com.x.myunn.R
 import com.x.myunn.activities.MainActivity
 import com.x.myunn.adapter.UserAdapter
-import com.x.myunn.model.Comment
-import com.x.myunn.model.Notification
-import com.x.myunn.model.Post
-import com.x.myunn.model.User
+import com.x.myunn.model.*
+import com.x.myunn.utils.glideLoad
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
 class FirebaseRepo {
 
-    val mAuth = FirebaseAuth.getInstance()
-    val ref = FirebaseDatabase.getInstance().reference
+    private val mAuth = FirebaseAuth.getInstance()
+    private val ref = FirebaseDatabase.getInstance().reference
+    private val storageRef = FirebaseStorage.getInstance().reference
 
-    val userRef = ref.child("Users")
-    val postsRef = ref.child("Posts")
+    private val userRef = ref.child("Users")
+    private val postsRef = ref.child("Posts")
+    private val postImagesRef = ref.child("PostImages")
 
-    val storageProfilePicRef = FirebaseStorage.getInstance().reference
-        .child("Profile Pictures")
-
-    val now = SimpleDateFormat("h:mm a, MMM d`yy ", Locale.getDefault()).format(Calendar.getInstance().time)
+    private val now = SimpleDateFormat("h:mm a, MMM d`yy ", Locale.getDefault()).format(Calendar.getInstance().time)
 
     var currentUserImageUrl = ""
 
@@ -42,10 +43,8 @@ class FirebaseRepo {
         FirebaseHandler()
     }
 
-    val main = MainActivity.newInstance()
 
-
-    fun CreateAccount(
+    fun createAccount(
         fullname: String, username: String, email: String, password: String, c: Context
     ) {
 
@@ -71,8 +70,7 @@ class FirebaseRepo {
     }
 
     fun saveUsernameInfo(
-        fullname: String, username: String, email: String,
-        pd: ProgressDialog, c: Context
+        fullname: String, username: String, email: String, pd: ProgressDialog, c: Context
     ) {
 
         val userMap = HashMap<String, Any>()
@@ -116,7 +114,6 @@ class FirebaseRepo {
         pd.setCanceledOnTouchOutside(false)
         pd.show()
 
-
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
@@ -151,7 +148,13 @@ class FirebaseRepo {
                     val user = ds.getValue(User::class.java)!!
 
                     if (c != null) {
-                        main.glideLoad(c, user.image, img!!)
+                        try {
+                            glideLoad(c, user.image, img!!, false)
+                        }catch (e: Exception){
+                            Toast.makeText(c, "Couldn't get Image, Pls try again", Toast.LENGTH_SHORT).show()
+                            e.printStackTrace()
+                        }
+
                     }
                     username?.text = user.username
                     fullname?.text = user.fullname
@@ -169,20 +172,14 @@ class FirebaseRepo {
     }
 
 
-    fun updateUserInfo(
-        fullname: String,
-        username: String,
-        bio: String?,
-        imageUri: Uri?,
-        c: Context
-    ) {
-
+    fun updateUserInfo(fullname: String, username: String, bio: String?, imageUri: Uri?, c: Context)
+    {
         val pd = ProgressDialog(c)
         pd.setTitle("Updating")
         pd.setMessage("Updating account...")
         pd.show()
 
-        val fileRef = storageProfilePicRef.child(mAuth.currentUser!!.uid + "jpg")
+        val fileRef = storageRef.child("Profile Pictures").child(mAuth.currentUser!!.uid + "jpg")
 
         if (imageUri != null) {
 
@@ -248,19 +245,87 @@ class FirebaseRepo {
         })
     }
 
-    fun uploadPost(postDescription: String) {
+    fun uploadPost(postDescription: String, imageList: ArrayList<String>?) {
 
         val postId = postsRef.push().key
 
-        val postMap = HashMap<String, Any>()
-        postMap["postId"] = postId!!
+        if (imageList.isNullOrEmpty()){
+            uploadPostOnly(postId!!, postDescription)
+        }else{
+            uploadPostAndImages(postId!!, postDescription, imageList)
+        }
+
+    }
+
+    private fun uploadPostAndImages(key: String, postDescription: String, imageList: ArrayList<String>)
+    {
+
+        val postMap = HashMap<String, Any?>()
+        postMap["postId"] = key
         postMap["postTime"] = now
         postMap["postDescription"] = postDescription
         postMap["publisher"] = mAuth.currentUser!!.uid
+        postMap["_isPostImages"] = true
 
-        postsRef.child(postId).updateChildren(postMap)
+        postsRef.child(key).setValue(postMap)
+
+        //val uploadedImages = arrayListOf<String>()
+
+        //var i = 0
+
+        val storagePostImageRef = storageRef.child("Post Images")
+
+            var i = 0
+
+            for(uri_s: String in imageList){
+
+                i++
+
+                val fileUrl = Uri.parse(uri_s)
+
+                val filePath = storagePostImageRef.child("$key:$i.jpg")
+
+                filePath.putFile(fileUrl!!)
+                    .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> {
+                        if (!it.isSuccessful) {
+                            it.exception?.let {
+                                throw it
+                            }
+                        }
+                        return@Continuation filePath.downloadUrl
+                    })
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            val mUri = it.result.toString()
+
+                            //uploadedImages.add(mUri)
+
+                            val postImagesMap = HashMap<String, Any?>()
+                            postImagesMap["imageUrl"] = mUri
+
+                            postImagesRef.child(key).push().setValue(postImagesMap)
+
+                        }
+                    }
+            }
+
+
 
     }
+
+
+    private fun uploadPostOnly(key: String, postDescription: String) {
+
+        val postMap = HashMap<String, Any?>()
+        postMap["postId"] = key
+        postMap["postTime"] = now
+        postMap["postDescription"] = postDescription
+        postMap["publisher"] = mAuth.currentUser!!.uid
+        postMap["_isPostImages"] = false
+
+        postsRef.child(key).updateChildren(postMap)
+    }
+
 
     fun getPost(postId: String, post_: MutableLiveData<Post>) {
 
@@ -280,6 +345,34 @@ class FirebaseRepo {
             override fun onCancelled(p0: DatabaseError) {}
         })
     }
+
+    fun getPostImages(postID: String, postImagesList: MutableLiveData<MutableList<PostImage>>) {
+
+        val mPostImagesList = mutableListOf<PostImage>()
+
+        val _postImagesRef = postImagesRef.child(postID)
+
+        _postImagesRef.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(p0: DataSnapshot) {
+
+                if (p0.exists()) {
+                    mPostImagesList.clear()
+
+                    for (sp in p0.children) {
+                        val postImages = sp.getValue(PostImage::class.java)
+
+                        mPostImagesList.add(postImages!!)
+                    }
+
+                    postImagesList.value = mPostImagesList
+
+                    Log.d("TAG-F", "     PostImagesList: ${postImagesList.value}")
+                }
+            }
+        })
+    }
+
 
     fun myPost(profileId: String, postList: MutableLiveData<MutableList<Post>>) {
 
@@ -307,7 +400,7 @@ class FirebaseRepo {
         })
     }
 
-    fun saves(savedPostList: MutableLiveData<MutableList<Post>>) {
+    fun getStarredPost(savedPostList: MutableLiveData<MutableList<Post>>) {
         val mySavedIdList = mutableListOf<String>()
         val mPostList = mutableListOf<Post>()
 
@@ -333,25 +426,26 @@ class FirebaseRepo {
                         if (p0.exists()){
                             mPostList.clear()
                             for (sp in p0.children){
-                                val post = sp.getValue(Post::class.java)
+                                    val post = sp.getValue(Post::class.java)
 
-                                for (id in mySavedIdList){
+                                    for (id in mySavedIdList){
 
-                                    if(post!!.postId == id){
+                                        if(post!!.postId == id){
 
-                                        mPostList.add(post)
+                                            mPostList.add(post)
+                                        }
                                     }
                                 }
-                            }
-                        }
+
                         savedPostList.value = mPostList
+                        }
                     }
                 })
 
             }
         })
 
-        savesRef.addChildEventListener(object : ChildEventListener{
+        ref.child("Saves").addChildEventListener(object : ChildEventListener{
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
@@ -366,6 +460,10 @@ class FirebaseRepo {
             }
 
         })
+
+        mPostList.clear()
+        savedPostList.value = mPostList
+
     }
 
     fun numberOfLikes(likes: TextView, postId: String) {
@@ -466,8 +564,7 @@ class FirebaseRepo {
 
     fun getTotalFollowing(profileId: String, total_following: TextView?) {
 
-        val followersRef = ref.child("Follow")
-                                    .child(profileId).child("Following")
+        val followersRef = ref.child("Follow").child(profileId).child("Following")
 
         followersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(ds: DataSnapshot) {
@@ -623,7 +720,7 @@ class FirebaseRepo {
         nMap["userId"] = mAuth.currentUser!!.uid
         nMap["text"] = "commented: " + add_comment.text.toString()
         nMap["postId"] = postId
-        nMap["Post"] = true
+        nMap["_isPost"] = true
 
         notifyRef.push().setValue(nMap)
     }
@@ -635,7 +732,7 @@ class FirebaseRepo {
         nMap["userId"] = mAuth.currentUser!!.uid
         nMap["text"] = "liked your post"
         nMap["postId"] = postId
-        nMap["Post"] = true
+        nMap["_isPost"] = true
 
         notifyRef.push().setValue(nMap)
     }
@@ -643,11 +740,11 @@ class FirebaseRepo {
     fun addNotificationFollow(profileId: String) {
         val notifyRef = ref.child("Notifications").child(profileId)
 
-        val nMap = java.util.HashMap<String, Any>()
+        val nMap = HashMap<String, Any>()
         nMap["userId"] = mAuth.currentUser!!.uid
         nMap["text"] = "started following you"
         nMap["postId"] = ""
-        nMap["Post"] = false
+        nMap["_isPost"] = false
 
         notifyRef.push().setValue(nMap)
     }
@@ -671,7 +768,7 @@ class FirebaseRepo {
 
                     }
 
-                    Collections.reverse(mNotifications)
+                    mNotifications.reverse()
                     notifications.value = mNotifications
 
                 }

@@ -17,12 +17,15 @@ import com.x.myunn.firebase.FirebaseRepo
 import com.x.myunn.model.User
 import com.x.myunn.ui.search.SearchFragmentDirections
 import com.x.myunn.ui.showUsers.ShowUsersFragmentDirections
+import com.x.myunn.utils.glideLoad
+
 
 class UserAdapter(
     private var c: Context,
     private var mUser: MutableList<User>,
     private var isSearch: Boolean = false
-) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<UserAdapter.ViewHolder>()
+{
 
 
     val firebaseRepo = FirebaseRepo()
@@ -45,7 +48,7 @@ class UserAdapter(
         holder.username.text = "@${user.username}"
         holder.fullname.text = user.fullname
 
-        main.glideLoad(c, user.image, holder.userImage)
+        glideLoad(c, user.image, holder.userImage, false)
 
         firebaseRepo.checkFollowingAndFollowButtonStatus(user.uid, holder.follow_btn)
 

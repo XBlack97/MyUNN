@@ -128,6 +128,19 @@
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/postdetail_uploaded_post_images"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_layout_post_images"
+                        />
+
+
                     <include
                         android:id="@+id/postdetail_countersContainer"
                         layout="@layout/layout_post_detail_counters_panel"
