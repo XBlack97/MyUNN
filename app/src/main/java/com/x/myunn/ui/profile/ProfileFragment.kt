@@ -198,7 +198,7 @@ class ProfileFragment : Fragment() {
             postAdapter.notifyDataSetChanged()
 
             //viewModel.myRef.keepSynced(true)
-            Toast.makeText(requireContext(), "list: ${postAdapter.itemCount}", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(requireContext(), "list: ${postAdapter.itemCount}", Toast.LENGTH_SHORT).show()
 
 
         })

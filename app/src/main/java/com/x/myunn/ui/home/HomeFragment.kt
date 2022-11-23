@@ -76,7 +76,7 @@ class HomeFragment : Fragment() {
         swipeRefresh.setOnRefreshListener {
             //homeViewModel.refresh(view!!)
 
-            Toast.makeText(context, " Adapter size: ${postAdapter.itemCount}", Toast.LENGTH_LONG)
+            Toast.makeText(context, "Feed Updated", Toast.LENGTH_LONG)
                 .show()
 
             swipeRefresh.isRefreshing = false

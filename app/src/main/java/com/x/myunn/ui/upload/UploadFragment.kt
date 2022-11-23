@@ -148,13 +148,13 @@ class UploadFragment : Fragment() {
         postImages.setHasFixedSize(true)
         postImages.adapter = adapter
 
-        if (adapter.itemCount == 0){
-            postImages.visibility = View.GONE
-            Toast.makeText(context, "getItemCount(): ${adapter.itemCount}", Toast.LENGTH_SHORT).show()
-        }
-
-        postImages.visibility = View.VISIBLE
-        Toast.makeText(context, "getItemCount(): ${adapter.itemCount}", Toast.LENGTH_SHORT).show()
+//        if (adapter.itemCount == 0){
+//            postImages.visibility = View.GONE
+//            Toast.makeText(context, "getItemCount(): ${adapter.itemCount}", Toast.LENGTH_SHORT).show()
+//        }
+//
+//        postImages.visibility = View.VISIBLE
+//        Toast.makeText(context, "getItemCount(): ${adapter.itemCount}", Toast.LENGTH_SHORT).show()
 
 
 
